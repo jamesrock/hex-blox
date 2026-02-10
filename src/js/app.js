@@ -13,6 +13,8 @@ import {
 import { Rounder } from './Rounder.js';
 import { Scaler } from './Scaler.js';
 
+document.documentElement.style.height = window.navigator.standalone ? '100dvh' : '100dvh';
+
 const scaler = new Scaler(window.devicePixelRatio);
 
 class Block {
