@@ -1,6 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { Storage, createNode } from '@jamesrock/rockjs';
+import { Storage, createNode, getRandom, random, formatNumber } from '@jamesrock/rockjs';
 import { testBricks } from './testBricks2.js';
 import { Rounder } from './Rounder.js';
 import { Scaler } from './Scaler.js';
@@ -84,14 +84,10 @@ class Brick {
 
 		this.state = this.getRandomState();
 
-		log && console.log('init', this);
-
 		return this;
 
 	};
 	render(ctx) {
-
-		// log && console.log(this, 'render');
 
 		this.getBlocks().forEach((block) => {
 			block.render(ctx);
@@ -101,8 +97,6 @@ class Brick {
 
 	};
 	rotate() {
-
-		// log && console.log(this, 'rotate');
 
 		if(!this.falling) {
 			return this;
@@ -120,8 +114,6 @@ class Brick {
 		if(this.isBarrier || !this.falling) {
 			return;
 		};
-
-		// log && console.log('move();', this, `${this.x} ${this.y}`);
 
 		if(this.canMove(direction)) {
 
@@ -202,7 +194,6 @@ class Brick {
 				matches += 1;
 			};
 		});
-		// log && console.log('canMove()', this, matrix, movedMatrix, matches);
 		return matches===0;
 
 	};
@@ -216,16 +207,19 @@ class Brick {
 				matches += 1;
 			};
 		});
-		// log && console.log('canRotate()', this, matrix, rotatedMatrix, matches);
 		return matches===0;
 
 	};
 	getRandomState() {
-		return Math.floor(Math.random() * (this.blocks.length));
+		
+		return random(0, this.blocks.length-1);
+
 	};
 	getBlocks(override) {
+		
 		const state = override >= 0 ? override : this.state;
 		return this.blocks[state];
+
 	};
 	getStaticBlocks() {
 		
@@ -274,7 +268,7 @@ class YellowBrick extends Brick {
 		[[1, 1, 3], [2, 1, 2], [1, 2, 1], [2, 2, 0]],
 		[[1, 1, 1], [2, 1, 3], [1, 2, 0], [2, 2, 2]],
 	];
-	color = 'rgb(255, 215, 0)';
+	color = 'rgb(254, 217, 28)';
 };
 
 class RedBrick extends Brick {
@@ -287,7 +281,7 @@ class RedBrick extends Brick {
 		[[2, 0, 3], [2, 1, 2], [1, 1, 1], [1, 2, 0]],
 		[[0, 1, 0], [1, 1, 1], [1, 2, 2], [2, 2, 3]],
 	];
-	color = 'rgb(220, 20, 60)';
+	color = 'rgb(237, 0, 73)';
 };
 
 class GreenBrick extends Brick {
@@ -300,7 +294,7 @@ class GreenBrick extends Brick {
 		[[1, 0, 3], [1, 1, 2], [2, 1, 1], [2, 2, 0]],
 		[[0, 2, 0], [1, 2, 1], [1, 1, 2], [2, 1, 3]],
 	];
-	color = 'rgb(0, 128, 0)';
+	color = 'rgb(61, 201, 50)';
 };
 
 class PurpleBrick extends Brick {
@@ -313,7 +307,7 @@ class PurpleBrick extends Brick {
 		[[1, 0, 2], [1, 1, 1], [1, 2, 0], [0, 1, 3]],
 		[[1, 0, 3], [0, 1, 0], [1, 1, 1], [2, 1, 2]]
 	];
-	color = 'purple';
+	color = 'rgb(177, 49, 237)';
 };
 
 class BlueBrick extends Brick {
@@ -326,7 +320,7 @@ class BlueBrick extends Brick {
 		[[1, 0, 2], [1, 1, 1], [1, 2, 0], [2, 0, 3]],
 		[[0, 1, 0], [1, 1, 1], [2, 1, 2], [2, 2, 3]]
 	];
-	color = 'rgb(30, 144, 255)';
+	color = 'rgb(14, 108, 239)';
 };
 
 class OrangeBrick extends Brick {
@@ -339,7 +333,7 @@ class OrangeBrick extends Brick {
 		[[0, 1, 3], [1, 1, 2], [2, 1, 1], [0, 2, 0]],
 		[[0, 0, 0], [1, 0, 3], [1, 1, 2], [1, 2, 1]]
 	];
-	color = 'orange';
+	color = 'rgb(255, 131, 0)';
 };
 
 class CyanBrick extends Brick {
@@ -352,7 +346,7 @@ class CyanBrick extends Brick {
 		[[0, 1, 3], [1, 1, 2], [2, 1, 1], [3, 1, 0]],
 		[[2, 0, 3], [2, 1, 2], [2, 2, 1], [2, 3, 0]],
 	];
-	color = 'cyan';
+	color = 'rgb(37, 204, 253)';
 };
 
 class BottomBarrierBrick extends Brick {
@@ -380,7 +374,6 @@ class SideBarrierBrick extends Brick {
 class BrickFactory {
 	constructor(t) {
 
-		// log && console.log('BrickFactory', this);
 		this.t = t;
 
 	};
@@ -393,13 +386,19 @@ class BrickFactory {
 
 	};
 	getRandomBrick() {
-		return this.bricks[Math.floor(Math.random() * (this.bricks.length))];
+		
+		return getRandom(this.bricks);
+
 	};
 	getFirstInQueue() {
+		
 		return this.queue.shift(0);
+
 	};
 	getUpNext() {
+		
 		return this.queue[0];
+
 	};
 	getTestBrick() {
 		
@@ -532,12 +531,16 @@ class Tetris extends DisplayObject {
 
 	};
 	autoMove() {
+
+		console.log('Tetris.autoMove()');
 		
 		this.autoMoveTimer = setTimeout(() => {
 			if(this.mode === 'standard') {
-				this.moveAll('down');
+				this.move('down');
 			};
-			this.autoMove();
+			if(!this.gameOver) {
+				this.autoMove();
+			};
 		}, ((1000 + 25) - (25 * this.level)));
 		
 		return this;
@@ -561,7 +564,6 @@ class Tetris extends DisplayObject {
 		this.upNext.renderBrick(this.factory.getUpNext());
 
 		this.updateStats();
-		this.checkForMerges();
 		this.checkForLines();
 		this.checkForFallingBrick();
 		this.checkForOldBricks();
@@ -598,7 +600,7 @@ class Tetris extends DisplayObject {
 		this.addBrick();
 
 	};
-	rotateAll() {
+	rotate() {
 		
 		this.bricks.forEach((brick) => {
 			brick.rotate();
@@ -607,7 +609,7 @@ class Tetris extends DisplayObject {
 		return this;
 
 	};
-	moveAll(direction) {
+	move(direction) {
 		
 		this.bricks.forEach((brick) => {
 			brick.move(direction);
@@ -617,16 +619,22 @@ class Tetris extends DisplayObject {
 
 	};
 	getMatrix() {
+		
 		return this.bricks.flatMap((brick) => brick.getMatrix());
+
 	};
 	getYMatrix() {
+		
 		return this.bricks.flatMap((brick) => brick.getYMatrix());
+
 	};
 	getStaticBlocks() {
+		
 		return this.bricks.flatMap((brick) => brick.getStaticBlocks());
+
 	};
 	addBrick() {
-		
+
 		this.bricks.push(this.factory.getFirstInQueue().center());
 		this.factory.addToQueue();
 		this.checkForEmptyBoard();
@@ -634,8 +642,6 @@ class Tetris extends DisplayObject {
 
 	};
 	destroyBlocks(lines, callback) {
-
-		// log && console.log('destroyBlocks', lines);
 
 		lines.forEach(([y, blocks], index) => {
 
@@ -665,11 +671,7 @@ class Tetris extends DisplayObject {
 
 			}, (this.flashDuration*3));
 
-			// log && console.log('blocks', blocks);
-
 		});
-
-		// log && console.log(`Tetris.destroyBlocks(${y})`, this, lines);
 
 		return this;
 
@@ -694,7 +696,6 @@ class Tetris extends DisplayObject {
 
 		this.destroyBlocks(fullLines, (y, updateScore) => {
 
-			// log && console.log('MOVE');
 			blockMatrix.filter((block) => block.getRelativeY()<y).forEach((block) => {
 				block.y += 1;
 			});
@@ -771,26 +772,6 @@ class Tetris extends DisplayObject {
 		const blocks = this.getStaticBlocks();
 		return blocks.filter((block) => {return block.getRelativeX()===x && block.getRelativeY()===y})[0];
 	};
-	checkForMerges() {
-		if(this.brickCountCache===(this.bricks.length + this.destroying)) {return;}
-		console.log('change to brickCountCache'); // need another caching method, since this prevents bricks from merging before line clear
-		this.brickCountCache = (this.bricks.length + this.destroying);
-		for(var y=(this.height-1);y>=0;y--) {
-			for(var x=0;x<this.width;x++) {
-				let first = this.query(x, y);
-				if(!first) {continue;};
-				let next = this.query(x, (first.getRelativeY() - 1));
-				let value = first.value;
-				while(next && next.color === first.color) {
-					value += next.value;
-					next.value = 0;
-					next = this.query(x, (next.getRelativeY() - 1));
-				};
-				first.value = value;
-			};
-		};
-		return this;
-	};
 	updateLines() {
 
 		this.linesNode.innerHTML = `<h2>lines</h2><p>${this.lines}</p>`;
@@ -799,7 +780,7 @@ class Tetris extends DisplayObject {
 	};
 	updateScore() {
 
-		this.scoreNode.innerHTML = `<h2>score</h2><p>${this.score}</p>`;
+		this.scoreNode.innerHTML = `<h2>score</h2><p>${formatNumber(this.score)}</p>`;
 		return this;
 
 	};
@@ -833,8 +814,8 @@ class Tetris extends DisplayObject {
 		this.gameOverNode.innerHTML = `<div class="game-over-body">\
 			<h1>Game over!</h1>\
 			<div>\
-				<p>Score: ${this.score}</p>\
-				<p>Best: ${this.best}</p>\	
+				<p>Score: ${formatNumber(this.score)}</p>\
+				<p>Best: ${formatNumber(this.best)}</p>\
 			</div>\
 			<p class="smaller">Tap to try again.</p>\
 		</div>`;
@@ -887,7 +868,6 @@ class Tetris extends DisplayObject {
 	gameOver = false;
 	flashDuration = 300;
 	theme = 'light';
-	brickCountCache = 0;
 };
 
 var 
@@ -905,12 +885,12 @@ platform = Capacitor.getPlatform(),
 // platform = 'ios',
 safeArea = (platform==='ios' ? 50 : 0),
 nextUpTop = (safeArea + 20),
-log = true,
 tetris = window.tetris = new Tetris(),
 touch,
 xMovement = 0,
 yMovement = 0,
-rounder = new Rounder(40);
+rounder = new Rounder(40),
+brickCount = tetris.bricks.length;
 
 if(window.matchMedia('(prefers-color-scheme: dark)').matches) {
 	tetris.setTheme('dark');
@@ -933,14 +913,24 @@ root.style.setProperty('--game-width', platform==='ios' ? '100%' : 'auto');
 root.style.setProperty('--game-gap', platform==='ios' ? '0' : '20px');
 root.style.setProperty('--game-top-padding', platform==='ios' ? `${safeArea + 20}px` : '0');
 
+document.addEventListener('keyup', function() {
+	
+	brickCount = tetris.bricks.length;
+
+});
+
 document.addEventListener('keydown', function(e) {
 
+	if(tetris.bricks.length>brickCount) {
+		return;
+	};
+
 	if(isValidKey(e.code, directionKeys)) {
-		tetris.moveAll(directionKeysMap[e.code]);
+		tetris.move(directionKeysMap[e.code]);
 	};
 
 	if(isValidKey(e.code, rotateKeys)) {
-		tetris.rotateAll();
+		tetris.rotate();
 	};
 
 });
@@ -951,7 +941,7 @@ tetris.addEventListener('click', function() {
 		tetris.reset();
 	}
 	else {
-		tetris.rotateAll();
+		tetris.rotate();
 	};
 
 });
@@ -994,21 +984,21 @@ tetris.addEventListener('touchend', function() {
 		tetris.reset();
 	}
 	else if(noMovement) {
-		tetris.rotateAll();
+		tetris.rotate();
 	};
 
 });
 
 tetris.addEventListener('drag-down', function() {
-	tetris.moveAll('down');
+	tetris.move('down');
 });
 
 tetris.addEventListener('drag-right', function() {
-	tetris.moveAll('right');
+	tetris.move('right');
 });
 
 tetris.addEventListener('drag-left', function() {
-	tetris.moveAll('left');
+	tetris.move('left');
 });
 
 document.addEventListener('visibilitychange', function() {

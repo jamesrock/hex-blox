@@ -1,4 +1,4 @@
-## Hex Blox
+## HexBlox
 
 Built using [Capacitor](https://capacitorjs.com) with support from [Vite](https://vitejs.dev/).
 
