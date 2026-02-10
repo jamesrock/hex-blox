@@ -1,6 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { Storage, createNode, getRandom, random, formatNumber } from '@jamesrock/rockjs';
+import { Storage, createNode, getRandom, random, formatNumber, limit } from '@jamesrock/rockjs';
 import { testBricks } from './testBricks2.js';
 import { Rounder } from './Rounder.js';
 import { Scaler } from './Scaler.js';
@@ -487,11 +487,9 @@ class Tetris extends DisplayObject {
 	constructor() {
 
 		super();
-
-		const windowWidth = platform === 'ios' ? window.innerWidth : 500;
 		
 		this.gap = scaler.inflate(2);
-		this.scale = scaler.inflate(Math.floor((windowWidth - (2 * 2)) / 10));
+		this.scale = scaler.inflate(Math.floor((limit(window.innerWidth, 500) - (2 * 2)) / 10));
 
 		this.node = createNode('div', 'tetris');
 		this.canvas = createNode('canvas', 'game-canvas');
@@ -591,7 +589,7 @@ class Tetris extends DisplayObject {
 
 		this.score = 0;
 		this.lines = 0;
-		this.level = 10;
+		this.level = 1;
 		this.gameOver = false;
 
 		this.factory.addToQueue();
@@ -854,7 +852,7 @@ class Tetris extends DisplayObject {
 	bricks = [];
 	score = 0;
 	lines = 0;
-	level = 0;
+	level = 1;
 	best = 0;
 	scale = scaler.inflate(25);
 	gap = scaler.inflate(1.5);
