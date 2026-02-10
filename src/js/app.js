@@ -531,8 +531,6 @@ class Tetris extends DisplayObject {
 
 	};
 	autoMove() {
-
-		console.log('Tetris.autoMove()');
 		
 		this.autoMoveTimer = setTimeout(() => {
 			if(this.mode === 'standard') {
@@ -541,7 +539,7 @@ class Tetris extends DisplayObject {
 			if(!this.gameOver) {
 				this.autoMove();
 			};
-		}, ((1000 + 25) - (25 * this.level)));
+		}, (1000 - (35 * this.level)));
 		
 		return this;
 
@@ -593,7 +591,7 @@ class Tetris extends DisplayObject {
 
 		this.score = 0;
 		this.lines = 0;
-		this.level = 1;
+		this.level = 10;
 		this.gameOver = false;
 
 		this.factory.addToQueue();
