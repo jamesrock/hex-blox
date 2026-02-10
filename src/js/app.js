@@ -1,9 +1,19 @@
+import '../css/app.css';
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { Storage, createNode, getRandom, random, formatNumber, limit } from '@jamesrock/rockjs';
-import { testBricks } from './testBricks2.js';
+import { 
+	Storage, 
+	createNode, 
+	getRandom, 
+	random, 
+	formatNumber, 
+	limit,
+	isDarkMode
+} from '@jamesrock/rockjs';
 import { Rounder } from './Rounder.js';
 import { Scaler } from './Scaler.js';
+
+document.documentElement.style.height = window.navigator.standalone ? '100lvh' : '100dvh';
 
 const scaler = new Scaler(window.devicePixelRatio);
 
@@ -377,41 +387,23 @@ class BrickFactory {
 		this.t = t;
 
 	};
-	addToQueue(override) {
+	addToQueue() {
 
-		const type = override ? override : (this.test ? this.getTestBrick() : this.getRandomBrick());
-		const brick = this.makers[type](this.t);
+		const brick = this.makers[getRandom(this.bricks)](this.t);
 		this.queue.push(brick);
 		return brick;
 
 	};
-	getRandomBrick() {
-		
-		return getRandom(this.bricks);
-
-	};
 	getFirstInQueue() {
 		
-		return this.queue.shift(0);
+		const brick = this.queue.shift(0);
+		this.addToQueue();
+		return brick;
 
 	};
 	getUpNext() {
 		
 		return this.queue[0];
-
-	};
-	getTestBrick() {
-		
-		const brick = testBricks[this.testBrickIndex];
-		
-		if(this.testBrickIndex===(testBricks.length - 1)) {
-			this.testBrickIndex = 0;
-		}
-		else {
-			this.testBrickIndex ++;
-		};
-		
-		return brick;
 
 	};
 	bricks = [
@@ -433,8 +425,6 @@ class BrickFactory {
 		C: (t) => (new CyanBrick(t, 0, 0).init())
 	};
 	queue = [];
-	test = false;
-	testBrickIndex = 0;
 };
 
 class DisplayObject {
@@ -525,7 +515,6 @@ class Tetris extends DisplayObject {
 
 		this.reset();
 		this.checkForBest();
-		this.autoMove();
 
 	};
 	autoMove() {
@@ -542,7 +531,7 @@ class Tetris extends DisplayObject {
 		return this;
 
 	};
-	restartAutoMove() {
+	resetAutoMove() {
 		
 		clearTimeout(this.autoMoveTimer);
 		this.autoMove();
@@ -632,7 +621,7 @@ class Tetris extends DisplayObject {
 	addBrick() {
 
 		this.bricks.push(this.factory.getFirstInQueue().center());
-		this.factory.addToQueue();
+		this.resetAutoMove();
 		this.checkForEmptyBoard();
 		return this;
 
@@ -722,7 +711,7 @@ class Tetris extends DisplayObject {
 		});
 
 		if(!falling.length&&!this.destroying&&!this.gameOver) {
-			this.addBrick().restartAutoMove();
+			this.addBrick();
 		};
 
 		return this;
@@ -888,12 +877,7 @@ yMovement = 0,
 rounder = new Rounder(40),
 brickCount = tetris.bricks.length;
 
-if(window.matchMedia('(prefers-color-scheme: dark)').matches) {
-	tetris.setTheme('dark');
-}
-else {
-	tetris.setTheme('light');
-};
+tetris.setTheme(isDarkMode() ? 'dark' : 'light');
 
 tetris.appendTo(body).render();
 
@@ -947,12 +931,17 @@ tetris.addEventListener('touchstart', function(e) {
 	touch = e.touches[0];
 	xMovement = 0;
 	yMovement = 0;
+	brickCount = tetris.bricks.length;
 
 	e.preventDefault();
 
 }, false);
 
 tetris.addEventListener('touchmove', function(e) {
+
+	if(tetris.bricks.length>brickCount) {
+		return;
+	};
 	
 	const {clientX: originalClientX, clientY: originalClientY} = touch;
 	const {clientX, clientY} = e.touches[0];
