@@ -13,7 +13,7 @@ import {
 import { Rounder } from './Rounder.js';
 import { Scaler } from './Scaler.js';
 
-document.documentElement.style.height = window.navigator.standalone ? '100dvh' : '100dvh';
+document.documentElement.style.height = window.navigator.standalone ? '100vh' : '100vh';
 
 const scaler = new Scaler(window.devicePixelRatio);
 
@@ -488,7 +488,7 @@ class Tetris extends DisplayObject {
 		this.linesNode = createNode('div', 'stat');
 		this.levelNode = createNode('div', 'stat');
 		this.gameOverNode = createNode('div', 'game-over');
-		this.gameNode = createNode('div', 'game');
+		this.gameNode = createNode('div', 'board');
 		this.controlsNode = createNode('div', 'controls');
 		this.controlsTopNode = createNode('div', 'controls-top');
 		this.upNext = new UpNext(this);
@@ -499,7 +499,7 @@ class Tetris extends DisplayObject {
 		this.canvas.height = this.inflate(this.height);
 		this.canvas.style.width = `${scaler.deflate(this.inflate(this.width))}px`;
 
-		this.upNext.appendTo(this.node);
+		this.upNext.appendTo(this.gameNode);
 
 		this.node.appendChild(this.gameNode);
 		this.node.appendChild(this.controlsNode);
@@ -867,9 +867,7 @@ directionKeysMap = {
 },
 isValidKey = (key, options) => (options.includes(key)),
 platform = Capacitor.getPlatform(),
-// platform = 'ios',
-safeArea = (platform==='ios' ? 50 : 0),
-nextUpTop = (safeArea + 20),
+isApp = window.navigator.standalone || platform==='ios',
 tetris = window.tetris = new Tetris(),
 touch,
 xMovement = 0,
@@ -885,13 +883,7 @@ SplashScreen.hide();
 
 console.log('tetris', tetris);
 
-root.style.setProperty('--gap', `${tetris.gap / 2}px`);
-root.style.setProperty('--nextup-top', `${nextUpTop}px`);
-root.style.setProperty('--alignment', platform==='ios' ? 'start' : 'center');
-root.style.setProperty('--game-height', platform==='ios' ? '100%' : 'auto');
-root.style.setProperty('--game-width', platform==='ios' ? '100%' : 'auto');
-root.style.setProperty('--game-gap', platform==='ios' ? '0' : '20px');
-root.style.setProperty('--game-top-padding', platform==='ios' ? `${safeArea + 20}px` : '0');
+root.style.setProperty('--game-top-padding', isApp ? '30px' : '0');
 
 document.addEventListener('keyup', function() {
 	
