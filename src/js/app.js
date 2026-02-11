@@ -7,7 +7,8 @@ import {
 	getRandom, 
 	random, 
 	formatNumber, 
-	limit
+	limit,
+	isValidKey
 } from '@jamesrock/rockjs';
 import { Rounder } from './Rounder.js';
 import { Scaler } from './Scaler.js';
@@ -850,7 +851,6 @@ directionKeysMap = {
 	'ArrowLeft': 'left',
 	'ArrowRight': 'right'
 },
-isValidKey = (key, options) => (options.includes(key)),
 platform = Capacitor.getPlatform(),
 isApp = window.navigator.standalone || platform==='ios',
 tetris = window.tetris = new Tetris(),
@@ -858,7 +858,9 @@ touch,
 xMovement = 0,
 yMovement = 0,
 rounder = new Rounder(40),
-brickCount = tetris.bricks.length;
+brickCount = tetris.bricks.length,
+keydown = false,
+prevent = () => keydown&&tetris.bricks.length>brickCount;
 
 // tetris.setTheme(isDarkMode() ? 'dark' : 'light');
 
@@ -873,14 +875,17 @@ root.style.setProperty('--game-top-padding', isApp ? '30px' : '0');
 document.addEventListener('keyup', function() {
 	
 	brickCount = tetris.bricks.length;
+	keydown = false;
 
 });
 
 document.addEventListener('keydown', function(e) {
 
-	if(tetris.bricks.length>brickCount) {
+	if(prevent()) {
 		return;
 	};
+
+	keydown = true;
 
 	if(isValidKey(e.code, directionKeys)) {
 		tetris.move(directionKeysMap[e.code]);
@@ -909,6 +914,7 @@ tetris.addEventListener('touchstart', function(e) {
 	xMovement = 0;
 	yMovement = 0;
 	brickCount = tetris.bricks.length;
+	keydown = true;
 
 	e.preventDefault();
 
@@ -916,7 +922,7 @@ tetris.addEventListener('touchstart', function(e) {
 
 tetris.addEventListener('touchmove', function(e) {
 
-	if(tetris.bricks.length>brickCount) {
+	if(prevent()) {
 		return;
 	};
 	
@@ -948,6 +954,8 @@ tetris.addEventListener('touchend', function() {
 	else if(noMovement) {
 		tetris.rotate();
 	};
+
+	keydown = false;
 
 });
 
