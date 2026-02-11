@@ -13,7 +13,7 @@
 }
 
 :root {
-	--background: floralwhite;
+	--background: beige;
 	--foreground: rgb(100, 100, 100);
 	--h1-size: 36px;
 	--h2-size: 16px;
@@ -70,8 +70,8 @@ body {
 	background-image: radial-gradient(rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0));
 	transition: background-color 0.5s, color 0.5s;
 	font-size: var(--body-size);
-	line-height: 1.4;
 	font-weight: 700;
+	line-height: 1.4;
 	&.wordy {
 		align-items: center;
 	}
