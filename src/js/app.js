@@ -7,8 +7,7 @@ import {
 	getRandom, 
 	random, 
 	formatNumber, 
-	limit,
-	isDarkMode
+	limit
 } from '@jamesrock/rockjs';
 import { Rounder } from './Rounder.js';
 import { Scaler } from './Scaler.js';
@@ -475,9 +474,6 @@ class Tetris extends DisplayObject {
 	constructor() {
 
 		super();
-		
-		this.gap = scaler.inflate(2);
-		this.scale = scaler.inflate(Math.floor((limit(window.innerWidth, 500) - (2 * 2)) / 10));
 
 		this.node = createNode('div', 'tetris');
 		this.canvas = createNode('canvas', 'game-canvas');
@@ -486,9 +482,9 @@ class Tetris extends DisplayObject {
 		this.linesNode = createNode('div', 'stat');
 		this.levelNode = createNode('div', 'stat');
 		this.gameOverNode = createNode('div', 'game-over');
-		this.gameNode = createNode('div', 'board');
-		this.controlsNode = createNode('div', 'controls');
-		this.controlsTopNode = createNode('div', 'controls-top');
+		this.boardNode = createNode('div', 'board');
+		this.statsNode = createNode('div', 'stats');
+		this.statsTopNode = createNode('div', 'stats-top');
 		this.upNext = new UpNext(this);
 		this.factory = new BrickFactory(this);
 		this.storage = new Storage('me.jameserock.hexblox');
@@ -497,19 +493,19 @@ class Tetris extends DisplayObject {
 		this.canvas.height = this.inflate(this.height);
 		this.canvas.style.width = `${scaler.deflate(this.inflate(this.width))}px`;
 
-		this.upNext.appendTo(this.gameNode);
+		this.upNext.appendTo(this.boardNode);
 
-		this.node.appendChild(this.gameNode);
-		this.node.appendChild(this.controlsNode);
+		this.node.appendChild(this.boardNode);
+		this.node.appendChild(this.statsNode);
 
-		this.controlsNode.appendChild(this.controlsTopNode);
+		this.statsNode.appendChild(this.statsTopNode);
 
-		this.gameNode.appendChild(this.canvas);
-		this.gameNode.appendChild(this.gameOverNode);
+		this.boardNode.appendChild(this.canvas);
+		this.boardNode.appendChild(this.gameOverNode);
 		
-		this.controlsTopNode.appendChild(this.scoreNode);
-		this.controlsTopNode.appendChild(this.linesNode);
-		this.controlsTopNode.appendChild(this.levelNode);
+		this.statsTopNode.appendChild(this.scoreNode);
+		this.statsTopNode.appendChild(this.linesNode);
+		this.statsTopNode.appendChild(this.levelNode);
 
 		this.reset();
 		this.checkForBest();
@@ -800,7 +796,7 @@ class Tetris extends DisplayObject {
 				<p>Score: ${formatNumber(this.score)}</p>\
 				<p>Best: ${formatNumber(this.best)}</p>\
 			</div>\
-			<p class="smaller">Tap to try again.</p>\
+			<p class="continue">Tap to continue.</p>\
 		</div>`;
 		this.gameOver = true;
 		
@@ -820,34 +816,25 @@ class Tetris extends DisplayObject {
 	setTheme(theme) {
 		
 		this.theme = theme;
-		root.style.setProperty('--background', this.getThemeBackgroundColor());
-		root.style.setProperty('--foreground', this.getThemeForegroundColor());
-		root.style.setProperty('--glass', theme === 'light' ? 'rgba(255, 255, 255, 0.75)' : 'rgba(0, 0, 0, 0.75)');
 		return this;
 
 	};
-	getThemeForegroundColor() {
-		return this.theme === 'light' ? 'rgb(125, 125, 125)' : 'snow';
-	};
-	getThemeBackgroundColor() {
-		return this.theme === 'light' ? 'snow' : '#111';
-	};
 	animationFrame = null;
 	width = 10;
-	height = 18;
+	height = 20;
 	speed = 800;
 	bricks = [];
 	score = 0;
 	lines = 0;
 	level = 1;
 	best = 0;
-	scale = scaler.inflate(25);
+	scale = scaler.inflate(Math.floor(limit(window.innerWidth, 500) / 12));
 	gap = scaler.inflate(1.5);
 	destroying = 0;
 	scores = [0, 40, 100, 300, 1200];
 	direction = 'right';
 	mode = 'standard';
-	eventTarget = 'gameNode';
+	eventTarget = 'boardNode';
 	gameOver = false;
 	flashDuration = 300;
 	theme = 'light';
@@ -873,7 +860,7 @@ yMovement = 0,
 rounder = new Rounder(40),
 brickCount = tetris.bricks.length;
 
-tetris.setTheme(isDarkMode() ? 'dark' : 'light');
+// tetris.setTheme(isDarkMode() ? 'dark' : 'light');
 
 tetris.appendTo(body).render();
 

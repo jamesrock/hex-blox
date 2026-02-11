@@ -13,24 +13,24 @@
 }
 
 :root {
-	--background: snow;
-	--foreground: rgb(125, 125, 125);
-	--h1-size: 42px;
+	--background: floralwhite;
+	--foreground: rgb(100, 100, 100);
+	--h1-size: 36px;
 	--h2-size: 16px;
 	--stat-size: 17px;
-	--game-over-size: 24px;
+	--stat-foreground: rgb(130, 130, 130);
+	--game-over-size: 22px;
 	--body-size: 14px;
 	--controls-gap: 50px;
 	--game-gap: 20px;
+	--glass: rgba(255, 255, 255, 0.75);
 }
 
 @media (min-width: 600px) {
 	
 	:root {
-		--h1-size: 48px;
 		--h2-size: 16px;
 		--stat-size: 22px;
-		--game-over-size: 26px;
 		--body-size: 16px;
 	}
 	
@@ -99,14 +99,15 @@ h2 {
 	font-weight: 700;
 }
 
-.board {
-	position: relative;
-	background-color: rgb(238, 238, 238);
-}
-
-.game-canvas {
+canvas {
 	display: block;
 	pointer-events: none;
+}
+
+.board {
+	position: relative;
+	background-color: white;
+	border: 2px solid white;
 }
 
 .tetris {
@@ -118,20 +119,24 @@ h2 {
 
 .game-over {
 	position: absolute;
-	inset: 0;
+	inset: -10px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	padding: 20px;
 	background-color: var(--glass);
 	backdrop-filter: blur(4px);
-	font-size: var(--game-over-size);
 	transition: background-color 0.5s;
 
 	.game-over-body {
+		font-size: var(--game-over-size);
 		display: flex;
 		flex-direction: column;
 		gap: 20px;
+	}
+
+	.continue {
+		font-size: 80%;
 	}
 
 }
@@ -140,19 +145,18 @@ h2 {
 	display: none;
 }
 
-.controls {
+.stats {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 }
 
-.controls-top {
+.stats-top {
 	display: flex;
 	gap: var(--controls-gap);
 	justify-content: space-between;
 	align-items: center;
-	/* padding-bottom: 10px; */
 }
 
 .upnext {
@@ -165,6 +169,7 @@ h2 {
 
 .stat {
 	font-size: var(--stat-size);
+	color: var(--stat-foreground);
 	display: flex;
 	flex-direction: column-reverse;
 }
