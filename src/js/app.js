@@ -10,10 +10,10 @@ import {
 	random, 
 	formatNumber, 
 	limit,
-	isValidKey
+	isValidKey,
+	Rounder,
+	Scaler
 } from '@jamesrock/rockjs';
-import { Rounder } from './Rounder';
-import { Scaler } from './Scaler';
 
 const scaler = new Scaler(window.devicePixelRatio);
 
