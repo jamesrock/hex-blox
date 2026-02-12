@@ -1,7 +1,7 @@
 import '../css/app.css';
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
-// import { BrickMaker } from './BrickMaker.js';
+// import { BrickMaker } from './BrickMaker';
 import { 
 	Storage, 
 	createNode, 
@@ -12,8 +12,8 @@ import {
 	limit,
 	isValidKey
 } from '@jamesrock/rockjs';
-import { Rounder } from './Rounder.js';
-import { Scaler } from './Scaler.js';
+import { Rounder } from './Rounder';
+import { Scaler } from './Scaler';
 
 const scaler = new Scaler(window.devicePixelRatio);
 
