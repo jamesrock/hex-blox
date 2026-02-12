@@ -1,6 +1,7 @@
 import '../css/app.css';
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
+// import { BrickMaker } from './BrickMaker.js';
 import { 
 	Storage, 
 	createNode, 
@@ -269,10 +270,7 @@ class Brick {
 class YellowBrick extends Brick {
 	constructor(t) {
 		super(t, 0, 0, [
-			[[1, 1], [2, 1], [1, 2], [2, 2]],
-			[[1, 1], [2, 1], [1, 2], [2, 2]],
-			[[1, 1], [2, 1], [1, 2], [2, 2]],
-			[[1, 1], [2, 1], [1, 2], [2, 2]],
+			[[1, 1], [2, 1], [1, 2], [2, 2]]
 		], 'gold');
 	};
 };
@@ -283,7 +281,7 @@ class RedBrick extends Brick {
 			[[1, 0], [1, 1], [0, 1], [0, 2]],
 			[[0, 0], [1, 0], [1, 1], [2, 1]],
 			[[2, 0], [2, 1], [1, 1], [1, 2]],
-			[[0, 1], [1, 1], [1, 2], [2, 2]],
+			[[0, 1], [1, 1], [1, 2], [2, 2]]
 		], 'rgb(237, 0, 73)');
 	};
 };
@@ -294,7 +292,7 @@ class GreenBrick extends Brick {
 			[[0, 0], [0, 1], [1, 1], [1, 2]],
 			[[0, 1], [1, 1], [1, 0], [2, 0]],
 			[[1, 0], [1, 1], [2, 1], [2, 2]],
-			[[0, 2], [1, 2], [1, 1], [2, 1]],
+			[[0, 2], [1, 2], [1, 1], [2, 1]]
 		], 'limegreen');
 	};
 };
@@ -336,9 +334,7 @@ class CyanBrick extends Brick {
 	constructor(t) {
 		super(t, 0, 0, [
 			[[0, 1], [1, 1], [2, 1], [3, 1]],
-			[[2, 0], [2, 1], [2, 2], [2, 3]],
-			[[0, 1], [1, 1], [2, 1], [3, 1]],
-			[[2, 0], [2, 1], [2, 2], [2, 3]],
+			[[2, 0], [2, 1], [2, 2], [2, 3]]
 		], 'cyan');
 	};
 };
@@ -958,3 +954,21 @@ document.addEventListener('visibilitychange', function() {
 	};
 
 });
+
+// const makersNode = createNode('div', 'makers');
+
+const makers = [
+	// new BrickMaker('rgb(237, 0, 73)'), // red
+	// new BrickMaker('gold'), // yellow
+	// new BrickMaker('limegreen'),
+	// new BrickMaker('rgb(177, 49, 237)'), // purple
+	// new BrickMaker('rgb(255,125,0)'), // orange
+	// new BrickMaker('cyan'),
+	// new BrickMaker('rgb(0,100,200)') // blue
+];
+
+// makers.forEach((maker) => {
+// 	maker.appendTo(makersNode);
+// });
+
+// body.appendChild(makersNode);

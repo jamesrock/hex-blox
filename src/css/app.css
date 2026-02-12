@@ -58,6 +58,7 @@ body {
 	font-family: 'Poppins', sans-serif;
 	text-align: center;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	background-color: var(--background);
@@ -172,4 +173,26 @@ canvas {
 	color: var(--stat-foreground);
 	display: flex;
 	flex-direction: column-reverse;
+}
+
+.makers {
+	padding-top: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	justify-content: center;
+}
+
+.block-maker {
+	display: flex;
+	flex-wrap: wrap;
+	background-color: black;
+	border: solid 1px black;
+}
+
+.block-maker-bit {
+	background-color: white;
+	&[data-active="Y"] {
+		background-color: var(--color);
+	}
 }
