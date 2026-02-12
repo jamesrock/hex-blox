@@ -261,6 +261,7 @@ class Brick {
 	y = 0;
 	state = 0;
 	blocks = [];
+	color = 'red';
 	falling = true;
 	isBarrier = false;
 };
@@ -346,7 +347,7 @@ class BottomBarrierBrick extends Brick {
 	constructor(t, x, y) {
 		super(t, x, y, [
 			[[0, 0, 0], [1, 0, 0], [2, 0, 0], [3, 0, 0], [4, 0, 0], [5, 0, 0], [6, 0, 0], [7, 0, 0], [8, 0, 0], [9, 0, 0]]
-		], '', false, true);
+		], 'red', false, true);
 	};
 };
 
@@ -354,7 +355,7 @@ class SideBarrierBrick extends Brick {
 	constructor(t, x, y) {
 		super(t, x, y, [
 			[[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0], [0, 7, 0], [0, 8, 0], [0, 9, 0], [0, 10, 0], [0, 11, 0], [0, 12, 0], [0, 13, 0], [0, 14, 0], [0, 15, 0], [0, 16, 0], [0, 17, 0], [0, 18, 0], [0, 19, 0]]
-		], '', false, true);
+		], 'red', false, true);
 	};
 };
 
@@ -383,7 +384,7 @@ class BrickFactory {
 
 		const count = 4;
 
-		this.queue = shuffle([
+		this.queue = shuffle(shuffle(shuffle([
 			...makeArray(count, () => new CyanBrick(this.t)),
 			...makeArray(count, () => new BlueBrick(this.t)),
 			...makeArray(count, () => new OrangeBrick(this.t)),
@@ -391,7 +392,7 @@ class BrickFactory {
 			...makeArray(count, () => new GreenBrick(this.t)),
 			...makeArray(count, () => new PurpleBrick(this.t)),
 			...makeArray(count, () => new RedBrick(this.t))
-		]);
+		])));
 
 		console.log(this.queue);
 
