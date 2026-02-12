@@ -461,7 +461,7 @@ class Tetris extends DisplayObject {
 		this.statsTopNode = createNode('div', 'stats-top');
 		this.upNext = new UpNext(this);
 		this.factory = new BrickFactory(this);
-		this.storage = new Storage('me.jameserock.hexblox');
+		this.storage = new Storage('me.jamesrock.hexblox');
 
 		this.canvas.width = this.inflate(this.width);
 		this.canvas.height = this.inflate(this.height);
