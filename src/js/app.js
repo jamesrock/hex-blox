@@ -4,7 +4,8 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { 
 	Storage, 
 	createNode, 
-	getRandom, 
+	shuffle,
+	makeArray,
 	random, 
 	formatNumber, 
 	limit,
@@ -75,24 +76,22 @@ class Block {
 };
 
 class Brick {
-	constructor(t, x, y) {
+	constructor(t, x, y, blocks, color, falling = true, isBarrier = false) {
 		
 		this.t = t;
 		this.x = x;
 		this.y = y;
-
-	};
-	init() {
+		this.blocks = blocks;
+		this.color = color;
+		this.falling = falling;
+		this.isBarrier = isBarrier;
+		this.state = this.getRandomState();
 
 		this.blocks = this.blocks.map((state) => {
 			return state.map((block) => {
 				return new Block(this, block[0], block[1]);
 			});
 		});
-
-		this.state = this.getRandomState();
-
-		return this;
 
 	};
 	render(ctx) {
@@ -267,116 +266,96 @@ class Brick {
 };
 
 class YellowBrick extends Brick {
-	constructor(t, x, y) {
-		super(t, x, y);
+	constructor(t) {
+		super(t, 0, 0, [
+			[[1, 1], [2, 1], [1, 2], [2, 2]],
+			[[1, 1], [2, 1], [1, 2], [2, 2]],
+			[[1, 1], [2, 1], [1, 2], [2, 2]],
+			[[1, 1], [2, 1], [1, 2], [2, 2]],
+		], 'rgb(254, 217, 28)');
 	};
-	blocks = [
-		[[1, 1], [2, 1], [1, 2], [2, 2]],
-		[[1, 1], [2, 1], [1, 2], [2, 2]],
-		[[1, 1], [2, 1], [1, 2], [2, 2]],
-		[[1, 1], [2, 1], [1, 2], [2, 2]],
-	];
-	color = 'rgb(254, 217, 28)';
 };
 
 class RedBrick extends Brick {
-	constructor(t, x, y) {
-		super(t, x, y);
+	constructor(t) {
+		super(t, 0, 0, [
+			[[1, 0], [1, 1], [0, 1], [0, 2]],
+			[[0, 0], [1, 0], [1, 1], [2, 1]],
+			[[2, 0], [2, 1], [1, 1], [1, 2]],
+			[[0, 1], [1, 1], [1, 2], [2, 2]],
+		], 'rgb(237, 0, 73)');
 	};
-	blocks = [
-		[[1, 0], [1, 1], [0, 1], [0, 2]],
-		[[0, 0], [1, 0], [1, 1], [2, 1]],
-		[[2, 0], [2, 1], [1, 1], [1, 2]],
-		[[0, 1], [1, 1], [1, 2], [2, 2]],
-	];
-	color = 'rgb(237, 0, 73)';
 };
 
 class GreenBrick extends Brick {
-	constructor(t, x, y) {
-		super(t, x, y);
+	constructor(t) {
+		super(t, 0, 0, [
+			[[0, 0], [0, 1], [1, 1], [1, 2]],
+			[[0, 1], [1, 1], [1, 0], [2, 0]],
+			[[1, 0], [1, 1], [2, 1], [2, 2]],
+			[[0, 2], [1, 2], [1, 1], [2, 1]],
+		], 'rgb(61, 201, 50)');
 	};
-	blocks = [
-		[[0, 0], [0, 1], [1, 1], [1, 2]],
-		[[0, 1], [1, 1], [1, 0], [2, 0]],
-		[[1, 0], [1, 1], [2, 1], [2, 2]],
-		[[0, 2], [1, 2], [1, 1], [2, 1]],
-	];
-	color = 'rgb(61, 201, 50)';
 };
 
 class PurpleBrick extends Brick {
-	constructor(t, x, y) {
-		super(t, x, y);
+	constructor(t) {
+		super(t, 0, 0, [
+			[[1, 0], [1, 1], [1, 2], [2, 1]],
+			[[0, 1], [1, 1], [2, 1], [1, 2]],
+			[[1, 0], [1, 1], [1, 2], [0, 1]],
+			[[1, 0], [0, 1], [1, 1], [2, 1]]
+		], 'rgb(177, 49, 237)');
 	};
-	blocks = [
-		[[1, 0], [1, 1], [1, 2], [2, 1]],
-		[[0, 1], [1, 1], [2, 1], [1, 2]],
-		[[1, 0], [1, 1], [1, 2], [0, 1]],
-		[[1, 0], [0, 1], [1, 1], [2, 1]]
-	];
-	color = 'rgb(177, 49, 237)';
 };
 
 class BlueBrick extends Brick {
-	constructor(t, x, y) {
-		super(t, x, y);
+	constructor(t) {
+		super(t, 0, 0, [
+			[[0, 2], [1, 0], [1, 1], [1, 2]],
+			[[0, 0], [0, 1], [1, 1], [2, 1]],
+			[[1, 0], [1, 1], [1, 2], [2, 0]],
+			[[0, 1], [1, 1], [2, 1], [2, 2]]
+		], 'rgb(14, 108, 239)');
 	};
-	blocks = [
-		[[0, 2], [1, 0], [1, 1], [1, 2]],
-		[[0, 0], [0, 1], [1, 1], [2, 1]],
-		[[1, 0], [1, 1], [1, 2], [2, 0]],
-		[[0, 1], [1, 1], [2, 1], [2, 2]]
-	];
-	color = 'rgb(14, 108, 239)';
 };
 
 class OrangeBrick extends Brick {
-	constructor(t, x, y) {
-		super(t, x, y);
+	constructor(t) {
+		super(t, 0, 0, [
+			[[2, 0], [0, 1], [1, 1], [2, 1]],
+			[[1, 0], [1, 1], [1, 2], [2, 2]],
+			[[0, 1], [1, 1], [2, 1], [0, 2]],
+			[[0, 0], [1, 0], [1, 1], [1, 2]]
+		], 'rgb(255, 131, 0)');
 	};
-	blocks = [
-		[[2, 0], [0, 1], [1, 1], [2, 1]],
-		[[1, 0], [1, 1], [1, 2], [2, 2]],
-		[[0, 1], [1, 1], [2, 1], [0, 2]],
-		[[0, 0], [1, 0], [1, 1], [1, 2]]
-	];
-	color = 'rgb(255, 131, 0)';
 };
 
 class CyanBrick extends Brick {
-	constructor(t, x, y) {
-		super(t, x, y);
+	constructor(t) {
+		super(t, 0, 0, [
+			[[0, 1], [1, 1], [2, 1], [3, 1]],
+			[[2, 0], [2, 1], [2, 2], [2, 3]],
+			[[0, 1], [1, 1], [2, 1], [3, 1]],
+			[[2, 0], [2, 1], [2, 2], [2, 3]],
+		], 'rgb(37, 204, 253)');
 	};
-	blocks = [
-		[[0, 1], [1, 1], [2, 1], [3, 1]],
-		[[2, 0], [2, 1], [2, 2], [2, 3]],
-		[[0, 1], [1, 1], [2, 1], [3, 1]],
-		[[2, 0], [2, 1], [2, 2], [2, 3]],
-	];
-	color = 'rgb(37, 204, 253)';
 };
 
 class BottomBarrierBrick extends Brick {
 	constructor(t, x, y) {
-		super(t, x, y);
+		super(t, x, y, [
+			[[0, 0, 0], [1, 0, 0], [2, 0, 0], [3, 0, 0], [4, 0, 0], [5, 0, 0], [6, 0, 0], [7, 0, 0], [8, 0, 0], [9, 0, 0]]
+		], '', false, true);
 	};
-	blocks = [
-		[[0, 0, 0], [1, 0, 0], [2, 0, 0], [3, 0, 0], [4, 0, 0], [5, 0, 0], [6, 0, 0], [7, 0, 0], [8, 0, 0], [9, 0, 0]]
-	];
-	falling = false;
-	isBarrier = true;
 };
 
 class SideBarrierBrick extends Brick {
 	constructor(t, x, y) {
-		super(t, x, y);
+		super(t, x, y, [
+			[[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0], [0, 7, 0], [0, 8, 0], [0, 9, 0], [0, 10, 0], [0, 11, 0], [0, 12, 0], [0, 13, 0], [0, 14, 0], [0, 15, 0], [0, 16, 0], [0, 17, 0], [0, 18, 0], [0, 19, 0]]
+		], '', false, true);
 	};
-	blocks = [
-		[[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0], [0, 7, 0], [0, 8, 0], [0, 9, 0], [0, 10, 0], [0, 11, 0], [0, 12, 0], [0, 13, 0], [0, 14, 0], [0, 15, 0], [0, 16, 0], [0, 17, 0], [0, 18, 0], [0, 19, 0]]
-	];
-	falling = false;
-	isBarrier = true;
 };
 
 class BrickFactory {
@@ -385,17 +364,13 @@ class BrickFactory {
 		this.t = t;
 
 	};
-	addToQueue() {
-
-		const brick = this.makers[getRandom(this.bricks)](this.t);
-		this.queue.push(brick);
-		return brick;
-
-	};
 	getFirstInQueue() {
 		
 		const brick = this.queue.shift(0);
-		this.addToQueue();
+		if(this.queue.length===0) {
+			this.reset();
+		};
+		
 		return brick;
 
 	};
@@ -404,23 +379,24 @@ class BrickFactory {
 		return this.queue[0];
 
 	};
-	bricks = [
-		'Y', 
-		'R', 
-		'O', 
-		'G', 
-		'P', 
-		'B', 
-		'C'
-	];
-	makers = {
-		Y: (t) => (new YellowBrick(t, 0, 0).init()),
-		R: (t) => (new RedBrick(t, 0, 0).init()), 
-		O: (t) => (new OrangeBrick(t, 0, 0).init()), 
-		G: (t) => (new GreenBrick(t, 0, 0).init()), 
-		P: (t) => (new PurpleBrick(t, 0, 0).init()), 
-		B: (t) => (new BlueBrick(t, 0, 0).init()), 
-		C: (t) => (new CyanBrick(t, 0, 0).init())
+	reset() {
+
+		const count = 4;
+
+		this.queue = shuffle([
+			...makeArray(count, () => new CyanBrick(this.t)),
+			...makeArray(count, () => new BlueBrick(this.t)),
+			...makeArray(count, () => new OrangeBrick(this.t)),
+			...makeArray(count, () => new YellowBrick(this.t)),
+			...makeArray(count, () => new GreenBrick(this.t)),
+			...makeArray(count, () => new PurpleBrick(this.t)),
+			...makeArray(count, () => new RedBrick(this.t))
+		]);
+
+		console.log(this.queue);
+
+		return this;
+
 	};
 	queue = [];
 };
@@ -566,9 +542,9 @@ class Tetris extends DisplayObject {
 		this.gameOverNode.setAttribute('data-active', false);
 
 		this.bricks = [
-			new BottomBarrierBrick(this, 0, this.height).init(),
-			new SideBarrierBrick(this, -1, 0).init(),
-			new SideBarrierBrick(this, this.width, 0).init()
+			new BottomBarrierBrick(this, 0, this.height),
+			new SideBarrierBrick(this, -1, 0),
+			new SideBarrierBrick(this, this.width, 0)
 		];
 
 		this.score = 0;
@@ -576,7 +552,7 @@ class Tetris extends DisplayObject {
 		this.level = 1;
 		this.gameOver = false;
 
-		this.factory.addToQueue();
+		this.factory.reset();
 		this.addBrick();
 
 	};
