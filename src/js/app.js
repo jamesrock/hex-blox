@@ -273,7 +273,7 @@ class YellowBrick extends Brick {
 			[[1, 1], [2, 1], [1, 2], [2, 2]],
 			[[1, 1], [2, 1], [1, 2], [2, 2]],
 			[[1, 1], [2, 1], [1, 2], [2, 2]],
-		], 'rgb(254, 217, 28)');
+		], 'gold');
 	};
 };
 
@@ -295,7 +295,7 @@ class GreenBrick extends Brick {
 			[[0, 1], [1, 1], [1, 0], [2, 0]],
 			[[1, 0], [1, 1], [2, 1], [2, 2]],
 			[[0, 2], [1, 2], [1, 1], [2, 1]],
-		], 'rgb(61, 201, 50)');
+		], 'limegreen');
 	};
 };
 
@@ -317,7 +317,7 @@ class BlueBrick extends Brick {
 			[[0, 0], [0, 1], [1, 1], [2, 1]],
 			[[1, 0], [1, 1], [1, 2], [2, 0]],
 			[[0, 1], [1, 1], [2, 1], [2, 2]]
-		], 'rgb(14, 108, 239)');
+		], 'rgb(0,100,200)');
 	};
 };
 
@@ -328,7 +328,7 @@ class OrangeBrick extends Brick {
 			[[1, 0], [1, 1], [1, 2], [2, 2]],
 			[[0, 1], [1, 1], [2, 1], [0, 2]],
 			[[0, 0], [1, 0], [1, 1], [1, 2]]
-		], 'rgb(255, 131, 0)');
+		], 'rgb(255,125,0)');
 	};
 };
 
@@ -339,7 +339,7 @@ class CyanBrick extends Brick {
 			[[2, 0], [2, 1], [2, 2], [2, 3]],
 			[[0, 1], [1, 1], [2, 1], [3, 1]],
 			[[2, 0], [2, 1], [2, 2], [2, 3]],
-		], 'rgb(37, 204, 253)');
+		], 'cyan');
 	};
 };
 
@@ -382,7 +382,7 @@ class BrickFactory {
 	};
 	reset() {
 
-		const count = 4;
+		const count = 7;
 
 		this.queue = shuffle(shuffle(shuffle([
 			...makeArray(count, () => new CyanBrick(this.t)),
@@ -821,7 +821,7 @@ class Tetris extends DisplayObject {
 var 
 body = document.body,
 root = document.querySelector(':root'),
-rotateKeys = ['Space'],
+rotateKeys = ['Space', 'ArrowUp'],
 directionKeys = ['ArrowDown', 'ArrowLeft', 'ArrowRight'],
 directionKeysMap = {
 	'ArrowDown': 'down',
