@@ -552,6 +552,8 @@ class Tetris extends DisplayObject {
 		this.factory.reset();
 		this.addBrick();
 
+		// this.showGameOverScreen();
+
 	};
 	rotate() {
 		
@@ -752,7 +754,7 @@ class Tetris extends DisplayObject {
 			<div class="game-over-body">\
 				<h1>Game over!</h1>\
 				<div>\
-					<p>Score: ${formatNumber(this.score)}</p>\
+					<p class="score">${formatNumber(this.score)}</p>\
 					<p>Best: ${formatNumber(this.storage.get('best'))}</p>\
 				</div>\
 				<p class="continue">Tap to continue.</p>\
