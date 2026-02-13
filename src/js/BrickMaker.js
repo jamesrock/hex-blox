@@ -3,36 +3,60 @@ import {
 	makeArray
 } from '@jamesrock/rockjs';
 
-export class BrickMaker {
+class BrickMakerBase {
+	appendTo(to) {
+
+		to.appendChild(this.node);
+		return this;
+
+	};
+};
+
+export class BrickMakers extends BrickMakerBase {
+	constructor() {
+
+		super();
+		
+		this.node = createNode('div', 'makers');
+
+		this.makers = [
+			new BrickMaker('rgb(237, 0, 73)', 3), // red
+			new BrickMaker('gold', 2), // yellow
+			new BrickMaker('limegreen', 3), // green
+			new BrickMaker('rgb(177, 49, 237)', 3), // purple
+			new BrickMaker('rgb(255,125,0)', 3), // orange
+			new BrickMaker('cyan'),
+			new BrickMaker('rgb(0,100,200)', 3) // blue
+		];
+
+		this.makers.forEach((maker) => {
+			maker.appendTo(this.node);
+		});
+
+	};
+};
+
+export class BrickMaker extends BrickMakerBase {
 	constructor(color, size = 4) {
+
+		super();
 
 		this.color = color;
 		this.size = size;
 
-		const maps = {
-			'size4': [8, 4, 2, 1],
-			'size3': [4, 2, 1],
-			'size2': [2, 1],
-		};
-
 		const node = this.node = createNode('div', 'block-maker');
 		const bob = 30;
 		const gap = 1;
-		const bitmap = maps[`size${size}`];
 		const bits = [];
-		const values = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
 
 		const calculate = () => {
-			let total = makeArray(size, () => 0);
-			makeArray(size).forEach((i) => {
-				bits.filter((bit) => Number(bit.dataset.x)===i).forEach((bit) => {
-					if(bit.dataset.active==='Y') {
-						total[i] += Number(bit.dataset.value);
-					};
-				});
-				total[i] = values[total[i]];
+			let total = makeArray(size*size, () => 0);
+			bits.forEach((bit, i) => {
+				if(bit.dataset.active==='Y') {
+					total[i] = Number(bit.dataset.value);
+				};
 			});
-			console.log(`0x${total.join('')}`);
+			console.log(JSON.stringify(total));
 		};
 
 		node.style.setProperty('--color', this.color);
@@ -47,7 +71,7 @@ export class BrickMaker {
 				let active = false;
 				bit.style.width = bit.style.height = `${bob}px`;
 				bit.dataset.x = x;
-				bit.dataset.value = bitmap[y];
+				bit.dataset.value = 1;
 				bit.dataset.active = 'N';
 				node.appendChild(bit);
 
@@ -61,12 +85,6 @@ export class BrickMaker {
 
 			});
 		});
-
-	};
-  appendTo(to) {
-
-		to.appendChild(this.node);
-		return this;
 
 	};
 };

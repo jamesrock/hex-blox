@@ -1,7 +1,6 @@
 import '../css/app.css';
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { BrickMaker } from './BrickMaker';
 import { 
 	Storage, 
 	createNode, 
@@ -14,6 +13,8 @@ import {
 	Rounder,
 	Scaler
 } from '@jamesrock/rockjs';
+import { BrickMakers } from './BrickMaker';
+import { convert } from './utils';
 
 const scaler = new Scaler(window.devicePixelRatio);
 
@@ -270,7 +271,7 @@ class Brick {
 class YellowBrick extends Brick {
 	constructor(t) {
 		super(t, 0, 0, [
-			[[1, 1], [2, 1], [1, 2], [2, 2]]
+			convert([1,1,1,1])
 		], 'gold');
 	};
 };
@@ -278,10 +279,10 @@ class YellowBrick extends Brick {
 class RedBrick extends Brick {
 	constructor(t) {
 		super(t, 0, 0, [
-			[[1, 0], [1, 1], [0, 1], [0, 2]],
-			[[0, 0], [1, 0], [1, 1], [2, 1]],
-			[[2, 0], [2, 1], [1, 1], [1, 2]],
-			[[0, 1], [1, 1], [1, 2], [2, 2]]
+			convert([0,1,0,1,1,0,1,0,0]),
+			convert([1,1,0,0,1,1,0,0,0]),
+			convert([0,0,1,0,1,1,0,1,0]),
+			convert([0,0,0,1,1,0,0,1,1])
 		], 'rgb(237, 0, 73)');
 	};
 };
@@ -289,10 +290,10 @@ class RedBrick extends Brick {
 class GreenBrick extends Brick {
 	constructor(t) {
 		super(t, 0, 0, [
-			[[0, 0], [0, 1], [1, 1], [1, 2]],
-			[[0, 1], [1, 1], [1, 0], [2, 0]],
-			[[1, 0], [1, 1], [2, 1], [2, 2]],
-			[[0, 2], [1, 2], [1, 1], [2, 1]]
+			convert([1,0,0,1,1,0,0,1,0]),
+			convert([0,1,1,1,1,0,0,0,0]),
+			convert([0,1,0,0,1,1,0,0,1]),
+			convert([0,0,0,0,1,1,1,1,0])
 		], 'limegreen');
 	};
 };
@@ -300,10 +301,10 @@ class GreenBrick extends Brick {
 class PurpleBrick extends Brick {
 	constructor(t) {
 		super(t, 0, 0, [
-			[[1, 0], [1, 1], [1, 2], [2, 1]],
-			[[0, 1], [1, 1], [2, 1], [1, 2]],
-			[[1, 0], [1, 1], [1, 2], [0, 1]],
-			[[1, 0], [0, 1], [1, 1], [2, 1]]
+			convert([0,1,0,0,1,1,0,1,0]),
+			convert([0,0,0,1,1,1,0,1,0]),
+			convert([0,1,0,1,1,0,0,1,0]),
+			convert([0,1,0,1,1,1,0,0,0])
 		], 'rgb(177, 49, 237)');
 	};
 };
@@ -311,10 +312,10 @@ class PurpleBrick extends Brick {
 class BlueBrick extends Brick {
 	constructor(t) {
 		super(t, 0, 0, [
-			[[0, 2], [1, 0], [1, 1], [1, 2]],
-			[[0, 0], [0, 1], [1, 1], [2, 1]],
-			[[1, 0], [1, 1], [1, 2], [2, 0]],
-			[[0, 1], [1, 1], [2, 1], [2, 2]]
+			convert([0,1,0,0,1,0,1,1,0]),
+			convert([1,0,0,1,1,1,0,0,0]),
+			convert([0,1,1,0,1,0,0,1,0]),
+			convert([0,0,0,1,1,1,0,0,1])
 		], 'rgb(0,100,200)');
 	};
 };
@@ -322,10 +323,10 @@ class BlueBrick extends Brick {
 class OrangeBrick extends Brick {
 	constructor(t) {
 		super(t, 0, 0, [
-			[[2, 0], [0, 1], [1, 1], [2, 1]],
-			[[1, 0], [1, 1], [1, 2], [2, 2]],
-			[[0, 1], [1, 1], [2, 1], [0, 2]],
-			[[0, 0], [1, 0], [1, 1], [1, 2]]
+			convert([0,0,1,1,1,1,0,0,0]),
+			convert([0,1,0,0,1,0,0,1,1]),
+			convert([0,0,0,1,1,1,1,0,0]),
+			convert([1,1,0,0,1,0,0,1,0])
 		], 'rgb(255,125,0)');
 	};
 };
@@ -333,8 +334,8 @@ class OrangeBrick extends Brick {
 class CyanBrick extends Brick {
 	constructor(t) {
 		super(t, 0, 0, [
-			[[0, 1], [1, 1], [2, 1], [3, 1]],
-			[[2, 0], [2, 1], [2, 2], [2, 3]]
+			convert([0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0]),
+			convert([0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0])
 		], 'cyan');
 	};
 };
@@ -830,6 +831,7 @@ tetris = window.tetris = new Tetris(),
 touch,
 xMovement = 0,
 yMovement = 0,
+makers = new BrickMakers(),
 rounder = new Rounder(40),
 brickCount = tetris.bricks.length,
 keydown = false,
@@ -838,6 +840,7 @@ prevent = () => keydown&&tetris.bricks.length>brickCount;
 // tetris.setTheme(isDarkMode() ? 'dark' : 'light');
 
 tetris.appendTo(body).render();
+// makers.appendTo(body);
 
 SplashScreen.hide();
 
@@ -954,21 +957,3 @@ document.addEventListener('visibilitychange', function() {
 	};
 
 });
-
-const makersNode = createNode('div', 'makers');
-
-const makers = [
-	new BrickMaker('rgb(237, 0, 73)'), // red
-	// new BrickMaker('gold'), // yellow
-	// new BrickMaker('limegreen'),
-	// new BrickMaker('rgb(177, 49, 237)'), // purple
-	// new BrickMaker('rgb(255,125,0)'), // orange
-	// new BrickMaker('cyan'),
-	// new BrickMaker('rgb(0,100,200)') // blue
-];
-
-makers.forEach((maker) => {
-	maker.appendTo(makersNode);
-});
-
-body.appendChild(makersNode);
