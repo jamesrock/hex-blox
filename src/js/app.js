@@ -2,16 +2,17 @@ import '../css/app.css';
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { 
-	Storage, 
+	DisplayObject,
+	GameBase,
+	Rounder,
+	Scaler,
 	createNode, 
 	shuffle,
 	makeArray,
 	random, 
 	formatNumber, 
 	limit,
-	isValidKey,
-	Rounder,
-	Scaler
+	isValidKey
 } from '@jamesrock/rockjs';
 import { BrickMakers } from './BrickMaker';
 import { convert } from './utils';
@@ -399,27 +400,6 @@ class BrickFactory {
 	queue = [];
 };
 
-class DisplayObject {
-	appendTo(to) {
-
-		to.appendChild(this.node);
-		return this;
-
-	};
-	addEventListener(event, handler, passive = true) {
-		
-		this.node.addEventListener(event, handler, {passive});
-		return this;
-		
-	};
-	dispatchEvent(event) {
-		
-		this.node.dispatchEvent(new Event(event));
-		return this;
-
-	};
-};
-
 class UpNext extends DisplayObject {
 	constructor(t) {
 
@@ -445,14 +425,11 @@ class UpNext extends DisplayObject {
 	size = 4;
 };
 
-class Tetris extends DisplayObject {
+class Tetris extends GameBase {
 	constructor() {
 
-		super();
+		super('hexblox');
 
-		this.node = createNode('div', 'tetris');
-		this.canvas = createNode('canvas', 'game-canvas');
-		this.ctx = this.canvas.getContext('2d');
 		this.scoreNode = createNode('div', 'stat');
 		this.linesNode = createNode('div', 'stat');
 		this.levelNode = createNode('div', 'stat');
@@ -462,13 +439,12 @@ class Tetris extends DisplayObject {
 		this.statsTopNode = createNode('div', 'stats-top');
 		this.upNext = new UpNext(this);
 		this.factory = new BrickFactory(this);
-		this.storage = new Storage('me.jamesrock.hexblox');
 
 		this.canvas.width = this.inflate(this.width);
 		this.canvas.height = this.inflate(this.height);
 		this.canvas.style.width = `${scaler.deflate(this.canvas.width)}px`;
 
-		this.node.style.aspectRatio = `${this.width}/${this.height}`;
+		this.boardNode.style.aspectRatio = `${this.width}/${this.height}`;
 
 		this.upNext.appendTo(this.boardNode);
 
@@ -746,26 +722,6 @@ class Tetris extends DisplayObject {
 	};
 	inflate(value) {
 		return value * this.scale;
-	};
-	showGameOverScreen() {
-
-		const best = this.storage.get('best') || 0;
-		this.storage.set('best', this.score > best ? this.score : best);
-		
-		this.gameOverNode.innerHTML = `\
-			<div class="game-over-body">\
-				<h1>Game over!</h1>\
-				<div>\
-					<p class="score">${formatNumber(this.score)}</p>\
-					<p class="best">Best: ${formatNumber(this.storage.get('best'))}</p>\
-				</div>\
-				<p class="continue">Tap to continue</p>\
-			</div>`;
-		this.gameOver = true;
-		this.gameOverNode.dataset.active = true;
-
-		return this;
-
 	};
 	setMode(mode) {
 
