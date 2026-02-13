@@ -444,8 +444,6 @@ class Tetris extends GameBase {
 		this.canvas.height = this.inflate(this.height);
 		this.canvas.style.width = `${scaler.deflate(this.canvas.width)}px`;
 
-		this.boardNode.style.aspectRatio = `${this.width}/${this.height}`;
-
 		this.upNext.appendTo(this.boardNode);
 
 		this.node.appendChild(this.boardNode);
