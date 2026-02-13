@@ -757,7 +757,7 @@ class Tetris extends DisplayObject {
 					<p class="score">${formatNumber(this.score)}</p>\
 					<p>Best: ${formatNumber(this.storage.get('best'))}</p>\
 				</div>\
-				<p class="continue">Tap to continue.</p>\
+				<p class="continue">Tap to continue</p>\
 			</div>`;
 		this.gameOver = true;
 		this.gameOverNode.dataset.active = true;
