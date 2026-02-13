@@ -755,7 +755,7 @@ class Tetris extends DisplayObject {
 				<h1>Game over!</h1>\
 				<div>\
 					<p class="score">${formatNumber(this.score)}</p>\
-					<p>Best: ${formatNumber(this.storage.get('best'))}</p>\
+					<p class="best">Best: ${formatNumber(this.storage.get('best'))}</p>\
 				</div>\
 				<p class="continue">Tap to continue</p>\
 			</div>`;
