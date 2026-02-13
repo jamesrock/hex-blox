@@ -408,13 +408,13 @@ class DisplayObject {
 	};
 	addEventListener(event, handler, passive = true) {
 		
-		this[this.eventTarget].addEventListener(event, handler, {passive});
+		this.node.addEventListener(event, handler, {passive});
 		return this;
 		
 	};
 	dispatchEvent(event) {
 		
-		this[this.eventTarget].dispatchEvent(new Event(event));
+		this.node.dispatchEvent(new Event(event));
 		return this;
 
 	};
@@ -794,7 +794,6 @@ class Tetris extends DisplayObject {
 	scores = [0, 40, 100, 300, 1200];
 	direction = 'right';
 	mode = 'standard';
-	eventTarget = 'boardNode';
 	gameOver = false;
 	flashDuration = 300;
 	theme = 'light';
