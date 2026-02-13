@@ -483,7 +483,6 @@ class Tetris extends DisplayObject {
 		this.statsTopNode.appendChild(this.levelNode);
 
 		this.reset();
-		this.checkForBest();
 
 	};
 	autoMove() {
@@ -711,17 +710,6 @@ class Tetris extends DisplayObject {
 		return this;
 
 	};
-	checkForBest() {
-
-		const best = this.storage.get('best');
-		
-		if(best) {
-			this.best = best;
-		};
-
-		return this;
-
-	};
 	query(x, y) {
 		const blocks = this.getStaticBlocks();
 		return blocks.filter((block) => {return block.getRelativeX()===x && block.getRelativeY()===y})[0];
@@ -757,7 +745,7 @@ class Tetris extends DisplayObject {
 	};
 	showGameOverScreen() {
 
-		const best = this.storage.get('best');
+		const best = this.storage.get('best') || 0;
 		this.storage.set('best', this.score > best ? this.score : best);
 		
 		this.gameOverNode.innerHTML = `\
