@@ -744,13 +744,6 @@ class Tetris extends DisplayObject {
 		return this;
 
 	};
-	setBest(value) {
-		
-		this.best = value;
-		this.storage.set('best', this.best);
-		return this;
-
-	};
 	updateStats() {
 		
 		this.updateLines();
@@ -764,20 +757,20 @@ class Tetris extends DisplayObject {
 	};
 	showGameOverScreen() {
 
-		this.gameOverNode.setAttribute('data-active', true);
-		this.gameOverNode.innerHTML = `<div class="game-over-body">\
-			<h1>Game over!</h1>\
-			<div>\
-				<p>Score: ${formatNumber(this.score)}</p>\
-				<p>Best: ${formatNumber(this.best)}</p>\
-			</div>\
-			<p class="continue">Tap to continue.</p>\
-		</div>`;
-		this.gameOver = true;
+		const best = this.storage.get('best');
+		this.storage.set('best', this.score > best ? this.score : best);
 		
-		if(this.score > this.best) {
-			this.setBest(this.score);
-		};
+		this.gameOverNode.innerHTML = `\
+			<div class="game-over-body">\
+				<h1>Game over!</h1>\
+				<div>\
+					<p>Score: ${formatNumber(this.score)}</p>\
+					<p>Best: ${formatNumber(this.storage.get('best'))}</p>\
+				</div>\
+				<p class="continue">Tap to continue.</p>\
+			</div>`;
+		this.gameOver = true;
+		this.gameOverNode.dataset.active = true;
 
 		return this;
 
