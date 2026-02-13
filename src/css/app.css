@@ -1,15 +1,36 @@
 @font-face {
 	font-family: 'Poppins';
+	font-weight: 500;
+	font-style: normal;
+	src: url('/fonts/Poppins-Medium.ttf');
+}
+
+@font-face {
+	font-family: 'Poppins';
+	font-weight: 600;
+	font-style: normal;
+	src: url('/fonts/Poppins-SemiBold.ttf');
+}
+
+@font-face {
+	font-family: 'Poppins';
 	font-weight: 700;
 	font-style: normal;
-	src: url('../assets/fonts/Poppins-Bold.ttf');
+	src: url('/fonts/Poppins-Bold.ttf');
+}
+
+@font-face {
+	font-family: 'Poppins';
+	font-weight: 800;
+	font-style: normal;
+	src: url('/fonts/Poppins-ExtraBold.ttf');
 }
 
 @font-face {
 	font-family: 'Poppins';
 	font-weight: 900;
 	font-style: italic;
-	src: url('../assets/fonts/Poppins-BlackItalic.ttf');
+	src: url('/fonts/Poppins-BlackItalic.ttf');
 }
 
 :root {
@@ -23,7 +44,6 @@
 	--body-size: 14px;
 	--controls-gap: 50px;
 	--game-gap: 20px;
-	--glass: rgba(255, 255, 255, 0.75);
 }
 
 @media (min-width: 600px) {
@@ -63,16 +83,16 @@ body {
 	align-items: center;
 	background-color: var(--background);
 	color: var(--foreground);
-	height: 100%;
 	text-transform: uppercase;
 	letter-spacing: 1px;
-	-webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-	background-image: radial-gradient(rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0));
 	transition: background-color 0.5s, color 0.5s;
 	font-size: var(--body-size);
 	font-weight: 700;
 	line-height: 1.4;
+	height: 100%;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
 	&.wordy {
 		align-items: center;
 	}
@@ -93,6 +113,7 @@ h1 {
 	font-size: var(--h1-size);
 	font-style: italic;
 	font-weight: 900;
+	line-height: 1;
 }
 
 h2 {
@@ -125,8 +146,7 @@ canvas {
 	align-items: center;
 	justify-content: center;
 	padding: 20px;
-	background-color: var(--glass);
-	backdrop-filter: blur(4px);
+	backdrop-filter: blur(5px);
 	transition: background-color 0.5s;
 
 	.game-over-body {
@@ -138,10 +158,11 @@ canvas {
 
 	.score {
 		font-size: 42px;
+		font-weight: 600;
 	}
 
 	.continue {
-		font-size: 80%;
+		font-size: 18px;
 	}
 
 }
