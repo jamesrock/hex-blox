@@ -1,7 +1,10 @@
+import { 
+	createNode, 
+	makeArray
+} from '@jamesrock/rockjs';
+
 export class BrickMaker {
 	constructor(color, size = 4) {
-
-		super();
 
 		this.color = color;
 		this.size = size;

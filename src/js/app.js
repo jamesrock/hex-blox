@@ -1,7 +1,7 @@
 import '../css/app.css';
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
-// import { BrickMaker } from './BrickMaker';
+import { BrickMaker } from './BrickMaker';
 import { 
 	Storage, 
 	createNode, 
@@ -955,10 +955,10 @@ document.addEventListener('visibilitychange', function() {
 
 });
 
-// const makersNode = createNode('div', 'makers');
+const makersNode = createNode('div', 'makers');
 
 const makers = [
-	// new BrickMaker('rgb(237, 0, 73)'), // red
+	new BrickMaker('rgb(237, 0, 73)'), // red
 	// new BrickMaker('gold'), // yellow
 	// new BrickMaker('limegreen'),
 	// new BrickMaker('rgb(177, 49, 237)'), // purple
@@ -967,8 +967,8 @@ const makers = [
 	// new BrickMaker('rgb(0,100,200)') // blue
 ];
 
-// makers.forEach((maker) => {
-// 	maker.appendTo(makersNode);
-// });
+makers.forEach((maker) => {
+	maker.appendTo(makersNode);
+});
 
-// body.appendChild(makersNode);
+body.appendChild(makersNode);
