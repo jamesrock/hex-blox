@@ -536,8 +536,6 @@ class Tetris extends DisplayObject {
 	};
 	reset() {
 
-		this.gameOverNode.setAttribute('data-active', false);
-
 		this.bricks = [
 			new BottomBarrierBrick(this, 0, this.height),
 			new SideBarrierBrick(this, -1, 0),
@@ -548,6 +546,8 @@ class Tetris extends DisplayObject {
 		this.lines = 0;
 		this.level = 1;
 		this.gameOver = false;
+
+		this.gameOverNode.dataset.active = false;
 
 		this.factory.reset();
 		this.addBrick();
