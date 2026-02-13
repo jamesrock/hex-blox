@@ -466,7 +466,9 @@ class Tetris extends DisplayObject {
 
 		this.canvas.width = this.inflate(this.width);
 		this.canvas.height = this.inflate(this.height);
-		this.canvas.style.width = `${scaler.deflate(this.inflate(this.width))}px`;
+		this.canvas.style.width = `${scaler.deflate(this.canvas.width)}px`;
+
+		this.node.style.aspectRatio = `${this.width}/${this.height}`;
 
 		this.upNext.appendTo(this.boardNode);
 
@@ -544,7 +546,7 @@ class Tetris extends DisplayObject {
 
 		this.score = 0;
 		this.lines = 0;
-		this.level = 1;
+		this.level = 0;
 		this.gameOver = false;
 
 		this.gameOverNode.dataset.active = false;
@@ -784,7 +786,7 @@ class Tetris extends DisplayObject {
 	bricks = [];
 	score = 0;
 	lines = 0;
-	level = 1;
+	level = 0;
 	best = 0;
 	scale = scaler.inflate(Math.floor(limit(window.innerWidth, 500) / 12));
 	gap = scaler.inflate(1.5);
