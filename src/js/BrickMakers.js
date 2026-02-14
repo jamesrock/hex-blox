@@ -4,6 +4,16 @@ import {
 	createNode, 
 } from '@jamesrock/rockjs';
 
+const colors = {
+	red: 'rgb(237, 0, 73)',
+	yellow: 'gold',
+	green: 'limegreen',
+	purple: 'rgb(177, 49, 237)',
+	orange: 'rgb(255,125,0)',
+	cyan: 'cyan',
+	blue: 'rgb(0,100,200)'
+};
+
 export class BrickMakers extends DisplayObject {
 	constructor() {
 
@@ -12,13 +22,13 @@ export class BrickMakers extends DisplayObject {
 		this.node = createNode('div', 'makers');
 
 		this.makers = [
-			new BrickMaker('rgb(237, 0, 73)', 3), // red
-			new BrickMaker('gold', 2), // yellow
-			new BrickMaker('limegreen', 3), // green
-			new BrickMaker('rgb(177, 49, 237)', 3), // purple
-			new BrickMaker('rgb(255,125,0)', 3), // orange
-			new BrickMaker('cyan'),
-			new BrickMaker('rgb(0,100,200)', 3) // blue
+			new BrickMaker(colors.red, 3),
+			new BrickMaker(colors.yellow, 2),
+			new BrickMaker(colors.green, 3),
+			new BrickMaker(colors.purple, 3),
+			new BrickMaker(colors.orange, 3),
+			new BrickMaker(colors.cyan),
+			new BrickMaker(colors.blue, 3)
 		];
 
 		this.makers.forEach((maker) => {
