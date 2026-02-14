@@ -13,12 +13,5 @@ export default defineConfig({
         privacy: './src/privacy.html',
       },
     },
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        api: 'modern',
-      },
-    },
-  },
+  }
 });
