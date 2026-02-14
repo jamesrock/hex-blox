@@ -14,7 +14,7 @@ import {
 	limit,
 	isValidKey
 } from '@jamesrock/rockjs';
-import { BrickMakers } from './BrickMaker';
+// import { BrickMakers } from './BrickMakers';
 import { convert } from './utils';
 
 const scaler = new Scaler(window.devicePixelRatio);
@@ -769,7 +769,7 @@ tetris = window.tetris = new Tetris(),
 touch,
 xMovement = 0,
 yMovement = 0,
-makers = new BrickMakers(),
+// makers = new BrickMakers(),
 rounder = new Rounder(40),
 brickCount = tetris.bricks.length,
 keydown = false,
