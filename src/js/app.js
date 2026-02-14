@@ -317,7 +317,7 @@ class BlueBrick extends Brick {
 			convert([1,0,0,1,1,1,0,0,0]),
 			convert([0,1,1,0,1,0,0,1,0]),
 			convert([0,0,0,1,1,1,0,0,1])
-		], 'rgb(0,100,200)');
+		], 'rgb(0, 111, 222)');
 	};
 };
 
@@ -328,7 +328,7 @@ class OrangeBrick extends Brick {
 			convert([0,1,0,0,1,0,0,1,1]),
 			convert([0,0,0,1,1,1,1,0,0]),
 			convert([1,1,0,0,1,0,0,1,0])
-		], 'rgb(255,125,0)');
+		], 'rgb(255, 125, 0)');
 	};
 };
 

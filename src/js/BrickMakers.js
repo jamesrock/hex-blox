@@ -22,13 +22,13 @@ export class BrickMakers extends DisplayObject {
 		this.node = createNode('div', 'makers');
 
 		this.makers = [
-			new BrickMaker(colors.red, 3),
-			new BrickMaker(colors.yellow, 2),
-			new BrickMaker(colors.green, 3),
-			new BrickMaker(colors.purple, 3),
-			new BrickMaker(colors.orange, 3),
-			new BrickMaker(colors.cyan),
-			new BrickMaker(colors.blue, 3)
+			new BrickMaker({color: colors.red, size: 3}),
+			new BrickMaker({color: colors.yellow, size: 2}),
+			new BrickMaker({color: colors.green, size: 3}),
+			new BrickMaker({color: colors.purple, size: 3}),
+			new BrickMaker({color: colors.orange, size: 3}),
+			new BrickMaker({color: colors.cyan}),
+			new BrickMaker({color: colors.blue, size: 3})
 		];
 
 		this.makers.forEach((maker) => {
