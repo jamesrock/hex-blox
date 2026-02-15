@@ -425,7 +425,7 @@ class UpNext extends DisplayObject {
 	size = 4;
 };
 
-class Tetris extends GameBase {
+class HexBlox extends GameBase {
 	constructor() {
 
 		super('hexblox');
@@ -753,9 +753,9 @@ class Tetris extends GameBase {
 	theme = 'light';
 };
 
-var 
+const 
 body = document.body,
-root = document.querySelector(':root'),
+root = document.documentElement,
 rotateKeys = ['Space', 'ArrowUp'],
 directionKeys = ['ArrowDown', 'ArrowLeft', 'ArrowRight'],
 directionKeysMap = {
@@ -765,15 +765,17 @@ directionKeysMap = {
 },
 platform = Capacitor.getPlatform(),
 isApp = window.navigator.standalone || platform==='ios',
-tetris = window.tetris = new Tetris(),
-touch,
-xMovement = 0,
-yMovement = 0,
+tetris = window.tetris = new HexBlox(),
 // makers = new BrickMakers(),
 rounder = new Rounder(40),
-brickCount = tetris.bricks.length,
+prevent = () => keydown && tetris.bricks.length > brickCount;
+
+let
+xMovement = 0,
+yMovement = 0,
+touch = null,
 keydown = false,
-prevent = () => keydown&&tetris.bricks.length>brickCount;
+brickCount = tetris.bricks.length;
 
 // tetris.setTheme(isDarkMode() ? 'dark' : 'light');
 
@@ -861,8 +863,6 @@ document.addEventListener('touchmove', function(e) {
 });
 
 document.addEventListener('touchend', () => {
-
-	// const noMovement = (xMovement===0 && yMovement===0);
 
 	keydown = false;
 
