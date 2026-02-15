@@ -786,14 +786,14 @@ console.log('tetris', tetris);
 
 root.style.setProperty('--game-top-padding', isApp ? '30px' : '0');
 
-document.addEventListener('keyup', function() {
+document.addEventListener('keyup', () => {
 	
 	brickCount = tetris.bricks.length;
 	keydown = false;
 
 });
 
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', (e) => {
 
 	if(prevent()) {
 		return;
@@ -811,7 +811,7 @@ document.addEventListener('keydown', function(e) {
 
 });
 
-tetris.addEventListener('click', function() {
+document.addEventListener('click', () => {
 	
 	if(tetris.gameOver) {
 		tetris.reset();
@@ -820,9 +820,11 @@ tetris.addEventListener('click', function() {
 		tetris.rotate();
 	};
 
+	console.log('click', this);
+
 });
 
-tetris.addEventListener('touchstart', function(e) {
+document.addEventListener('touchstart', (e) => {
 	
 	touch = e.touches[0];
 	xMovement = 0;
@@ -832,9 +834,9 @@ tetris.addEventListener('touchstart', function(e) {
 
 	e.preventDefault();
 
-}, false);
+});
 
-tetris.addEventListener('touchmove', function(e) {
+document.addEventListener('touchmove', function(e) {
 
 	if(prevent()) {
 		return;
@@ -846,11 +848,11 @@ tetris.addEventListener('touchmove', function(e) {
 	const y = rounder.round(clientY - originalClientY);
 
 	if(x !== xMovement) {
-		this.dispatchEvent(new Event(x > xMovement ? 'drag-right' : 'drag-left'));
+		document.dispatchEvent(new Event(x > xMovement ? 'drag-right' : 'drag-left'));
 	};
 
 	if(y !== yMovement) {
-		this.dispatchEvent(new Event(y > yMovement ? 'drag-down' : 'drag-up'));
+		document.dispatchEvent(new Event(y > yMovement ? 'drag-down' : 'drag-up'));
 	};
 
 	xMovement = x;
@@ -858,34 +860,33 @@ tetris.addEventListener('touchmove', function(e) {
 
 });
 
-tetris.addEventListener('touchend', function() {
+document.addEventListener('touchend', () => {
 
-	const noMovement = (xMovement===0 && yMovement===0);
-
-	if(noMovement && tetris.gameOver) {
-		tetris.reset();
-	}
-	else if(noMovement) {
-		tetris.rotate();
-	};
+	// const noMovement = (xMovement===0 && yMovement===0);
 
 	keydown = false;
 
 });
 
-tetris.addEventListener('drag-down', function() {
+document.addEventListener('drag-down', () => {
+	
 	tetris.move('down');
+
 });
 
-tetris.addEventListener('drag-right', function() {
+document.addEventListener('drag-right', () => {
+	
 	tetris.move('right');
+
 });
 
-tetris.addEventListener('drag-left', function() {
+document.addEventListener('drag-left', () => {
+	
 	tetris.move('left');
+
 });
 
-document.addEventListener('visibilitychange', function() {
+document.addEventListener('visibilitychange', () => {
 
 	if(document.hidden) {
 		tetris.stop();
