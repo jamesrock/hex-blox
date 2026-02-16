@@ -433,7 +433,6 @@ class HexBlox extends GameBase {
 		this.scoreNode = createNode('div', 'stat');
 		this.linesNode = createNode('div', 'stat');
 		this.levelNode = createNode('div', 'stat');
-		this.gameOverNode = createNode('div', 'game-over');
 		this.boardNode = createNode('div', 'board');
 		this.statsNode = createNode('div', 'stats');
 		this.statsTopNode = createNode('div', 'stats-top');
@@ -458,7 +457,9 @@ class HexBlox extends GameBase {
 		this.statsTopNode.appendChild(this.linesNode);
 		this.statsTopNode.appendChild(this.levelNode);
 
+		this.showGameOverScreen();
 		this.reset();
+		this.render();
 
 	};
 	autoMove() {
@@ -779,7 +780,7 @@ brickCount = tetris.bricks.length;
 
 // tetris.setTheme(isDarkMode() ? 'dark' : 'light');
 
-tetris.appendTo(body).render();
+tetris.appendTo(body);
 // makers.appendTo(body);
 
 SplashScreen.hide();
