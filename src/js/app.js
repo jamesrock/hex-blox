@@ -6,6 +6,7 @@ import {
 	GameBase,
 	Rounder,
 	Scaler,
+	setDocumentHeight,
 	createNode, 
 	shuffle,
 	makeArray,
@@ -16,6 +17,8 @@ import {
 } from '@jamesrock/rockjs';
 // import { BrickMakers } from './BrickMakers';
 import { convert } from './utils';
+
+setDocumentHeight();
 
 const scaler = new Scaler(window.devicePixelRatio);
 

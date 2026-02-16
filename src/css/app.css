@@ -68,10 +68,6 @@
 	touch-action: none;
 }
 
-html {
-	height: 100svh;
-}
-
 body {
 	font-family: 'Poppins', sans-serif;
 	text-align: center;
