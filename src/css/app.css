@@ -44,15 +44,18 @@
 	--body-size: 18px;
 	--controls-gap: 50px;
 	--game-gap: 20px;
-}
 
-@media (min-width: 600px) {
-	
-	:root {
+	@media (min-width: 600px) {
 		--h2-size: 16px;
 		--stat-size: 22px;
 	}
-	
+
+	@media (prefers-color-scheme: dark) {
+		--background: #1C1C1C;
+		--foreground: white;
+		--stat-foreground: white;
+	}
+
 }
 
 * {
