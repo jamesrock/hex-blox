@@ -14,7 +14,7 @@
     "@capacitor/core": "latest",
     "@capacitor/ios": "^7.1.0",
     "@capacitor/splash-screen": "latest",
-    "@jamesrock/rockjs": "^1.14.0"
+    "@jamesrock/rockjs": "latest"
   },
   "devDependencies": {
     "@capacitor/cli": "latest",
