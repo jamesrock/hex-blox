@@ -12,8 +12,7 @@
   },
   "dependencies": {
     "@capacitor/core": "latest",
-    "@capacitor/ios": "^7.1.0",
-    "@capacitor/splash-screen": "latest",
+    "@capacitor/ios": "latest",
     "@jamesrock/rockjs": "latest"
   },
   "devDependencies": {
