@@ -1,10 +1,5 @@
 {
   "appId": "me.jamesrock.hexblox",
   "appName": "Hex Blox",
-  "webDir": "dist",
-  "plugins": {
-    "SplashScreen": {
-      "launchAutoHide": false
-    }
-  }
+  "webDir": "dist"
 }
