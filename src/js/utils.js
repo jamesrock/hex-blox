@@ -1,4 +1,4 @@
-export const convert = (bits) => {
+const convert = (bits) => {
 	const base = Math.sqrt(bits.length);
 	const out = [];
 	let y = 0;
@@ -17,3 +17,5 @@ export const convert = (bits) => {
 	});
 	return out;
 };
+
+export const convertSet = (bob) => bob.map((a) => convert(a));
