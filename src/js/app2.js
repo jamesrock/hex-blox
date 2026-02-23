@@ -15,7 +15,7 @@ import {
 	getRandom,
 	isValidKey
 } from '@jamesrock/rockjs';
-import { standardBlockDefs, newBlockDefs } from './blocks';
+import { blockDefs } from './blocks';
 import { BrickMakers } from './BrickMakers';
 import { convertSet } from './utils';
 
@@ -33,14 +33,8 @@ const colors = {
 	'cyan': 'cyan'
 };
 
-const colorKeys = Object.keys(colors);
-
-const makeSet = (t) => {
-	return standardBlockDefs.map((set) => new Brick(t, 0, 0, convertSet(set[0]), colors[set[1]]));
-};
-
-const makeSet2 = (t) => {
-	return newBlockDefs.map((set) => new Brick(t, 0, 0, convertSet(set), colors[getRandom(colorKeys)]));
+const makeSet = (t, type = 'standard') => {
+	return blockDefs[type].map((set) => new Brick(t, 0, 0, convertSet(set[0]), colors[set[1]]));
 };
 
 class Block {
@@ -522,30 +516,31 @@ class HexBlox extends GameBase {
 		lines.forEach(([y, blocks], index) => {
 
 			let flash = true;
-			const flashHandler = () => {
+			const count = 6;
+
+			makeArray(count).forEach((a, i) => {
 				
-				blocks.forEach((block) => {
-					block.flash = flash;
-				});
+				setTimeout(() => {
 
-				flash = !flash;
+					blocks.forEach((block) => {
+						block.flash = flash;
+					});
 
-			};
+					flash = !flash;
 
-			flashHandler();
+					if(i===count-1) {
 
-			const flashInterval = setInterval(flashHandler, this.flashDuration);
+						blocks.forEach((block) => {
+							block.hide();
+						});
 
-			setTimeout(() => {
-				
-				blocks.forEach((block) => {
-					block.hide();
-				});
+						callback(y, index === lines.length-1);
 
-				clearInterval(flashInterval);
-				callback(y, index === lines.length-1);
+					};
 
-			}, (this.flashDuration*3));
+				}, (this.flashDuration*i));
+
+			});
 
 		});
 
@@ -561,7 +556,7 @@ class HexBlox extends GameBase {
 		let fullLines = [];
 
 		for(var y=0;y<this.height;y++) {
-			if(matrix.filter((value) => (value===y)).length===10) {
+			if(matrix.filter((value) => (value===y)).length===this.width) {
 				fullLines.push([y, blockMatrix.filter((block) => (block.getRelativeY()===y))]);
 			};
 		};
@@ -664,7 +659,9 @@ class HexBlox extends GameBase {
 
 	};
 	inflate(value) {
+		
 		return value * this.scale;
+
 	};
 	setMode(mode) {
 
@@ -688,19 +685,21 @@ class HexBlox extends GameBase {
 	level = 0;
 	best = 0;
 	scale = scaler.inflate(Math.floor(limit(window.innerWidth, 500) / 12));
+	// scale = scaler.inflate(30);
 	gap = scaler.inflate(1.5);
 	destroying = 0;
 	scores = [0, 40, 100, 300, 1200];
 	direction = 'right';
 	mode = 'standard';
 	gameOver = false;
-	flashDuration = 300;
+	flashDuration = 400;
 	theme = 'light';
 };
 
 const 
 body = document.body,
 root = document.documentElement,
+resetKeys = ['Space'],
 rotateKeys = ['Space', 'ArrowUp'],
 directionKeys = ['ArrowDown', 'ArrowLeft', 'ArrowRight'],
 directionKeysMap = {
@@ -752,6 +751,10 @@ document.addEventListener('keydown', (e) => {
 
 	if(isValidKey(e.code, rotateKeys)) {
 		tetris.rotate();
+	};
+
+	if(tetris.gameOver && isValidKey(e.code, resetKeys)) {
+		tetris.reset();
 	};
 
 });
