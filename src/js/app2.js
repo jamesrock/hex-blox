@@ -60,7 +60,7 @@ class BrickFactory {
 	};
 	reset() {
 
-		this.queue = shuffle(shuffle(shuffle(makeArray(7, () => makeSet(this.t, 'new2')).flatMap(a => a))));
+		this.queue = shuffle(shuffle(shuffle(makeArray(7, () => makeSet(this.t)).flatMap(a => a))));
 
 		console.log(this.queue);
 
