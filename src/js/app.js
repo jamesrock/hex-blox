@@ -1,6 +1,5 @@
 import '../css/app.css';
 import { Capacitor } from '@capacitor/core';
-import { SplashScreen } from '@capacitor/splash-screen';
 import { 
 	DisplayObject,
 	GameBase,
@@ -8,341 +7,18 @@ import {
 	Scaler,
 	setDocumentHeight,
 	createNode, 
-	shuffle,
 	makeArray,
-	random, 
 	formatNumber, 
 	limit,
 	isValidKey
 } from '@jamesrock/rockjs';
-// import { BrickMakers } from './BrickMakers';
-import { convert } from './utils';
+import { Brick } from './Brick';
+import { BrickFactory } from './BrickFactory';
+import { BrickMakers } from './BrickMakers';
 
 setDocumentHeight();
 
 const scaler = new Scaler(window.devicePixelRatio);
-
-class Block {
-	constructor(brick, x, y) {
-
-		this.brick = brick;
-		this.x = x;
-		this.y = y;
-
-	};
-	render(ctx) {
-		if(!this.visible) {return}; // omit from render if hidden
-		ctx.fillStyle = this.flash ? 'transparent' : this.brick.color;
-		ctx.fillRect(
-			(this.brick.t.inflate(this.brick.x + this.x) + this.brick.t.gap), 
-			(this.brick.t.inflate(this.brick.y + this.y) + this.brick.t.gap), 
-			(this.brick.t.inflate(1) - (this.brick.t.gap * 2)), 
-			(this.brick.t.inflate(1) - (this.brick.t.gap * 2))
-		);
-		ctx.fillStyle = this.flash ? 'transparent' : '#FFF';
-		return this;
-	};
-	getMatrix() {
-		if(!this.visible) {return null}; // omit from matrix if hidden
-		return `x${this.brick.x + this.x}y${this.brick.y + this.y}`;
-	};
-	getMovedMatrix(direction = 'down') {
-		if(!this.visible) {return null}; // omit from matrix if hidden
-		switch(direction) {
-			case 'down':
-				return `x${this.brick.x + this.x}y${this.brick.y + (this.y + 1)}`;
-			case 'left':
-				return `x${this.brick.x + (this.x - 1)}y${this.brick.y + this.y}`;
-			case 'right':
-				return `x${this.brick.x + (this.x + 1)}y${this.brick.y + this.y}`;
-			case 'up':
-				return `x${this.brick.x + this.x}y${this.brick.y + (this.y - 1)}`;
-		};
-	};
-	move() {
-		this.y += 1;
-		this.moved = true;
-	};
-	getRelativeY() {
-		return (this.brick.y + this.y);
-	};
-	getRelativeX() {
-		return (this.brick.x + this.x);
-	};
-	isHidden() {
-		return !this.visible;
-	};
-	hide() {
-		this.visible = false;
-		return this;
-	};
-	moved = false;
-	visible = true;
-	flash = false;
-};
-
-class Brick {
-	constructor(t, x, y, blocks, color, falling = true, isBarrier = false) {
-		
-		this.t = t;
-		this.x = x;
-		this.y = y;
-		this.blocks = blocks;
-		this.color = color;
-		this.falling = falling;
-		this.isBarrier = isBarrier;
-		this.state = this.getRandomState();
-
-		this.blocks = this.blocks.map((state) => {
-			return state.map((block) => {
-				return new Block(this, block[0], block[1]);
-			});
-		});
-
-	};
-	render(ctx) {
-
-		this.getBlocks().forEach((block) => {
-			block.render(ctx);
-		});
-
-		return this;
-
-	};
-	rotate() {
-
-		if(!this.falling) {
-			return this;
-		};
-
-		if(this.canRotate()) {
-			this.state = this.getNextState();
-		};
-
-		return this;
-
-	};
-	move(direction) {
-		
-		if(this.isBarrier || !this.falling) {
-			return;
-		};
-
-		if(this.canMove(direction)) {
-
-			switch(direction) {
-				case 'down':
-					this.y += 1;
-				break;
-				case 'left':
-					this.x -= 1;
-				break;
-				case 'right':
-					this.x += 1;
-				break;
-			};
-
-		}
-		else if(direction==='down') {
-
-			this.falling = false;
-			
-			if(this.y===0) {
-				this.t.showGameOverScreen();
-			};
-
-		};
-
-		return this;
-
-	};
-	getMatrix() {
-		
-		if(this.falling) {return []}; // return empty matrix if falling
-		
-		return this.getBlocks().map((block) => {
-			return block.getMatrix();
-		}).filter((item) => {
-			return item;
-		});
-
-	};
-	getMovedMatrix(direction) {
-		
-		return this.getBlocks().map((block) => {
-			return block.getMovedMatrix(direction);
-		}).filter((item) => {
-			return item;
-		});
-
-	};
-	getRotatedMatrix() {
-
-		return this.getBlocks(this.getNextState()).map((block) => {
-			return block.getMatrix();
-		}).filter((item) => {
-			return item;
-		});
-
-	};
-	getYMatrix() {
-
-		if(this.falling || this.isBarrier) {return []}; // return empty matrix where brick is falling or is barrier
-		
-		return this.getBlocks().map((block) => {
-			if(!block.visible) {return null}; // omit from matrix if hidden
-			return block.getRelativeY();
-		}).filter((item) => {
-			return item;
-		});
-
-	};
-	canMove(direction) {
-		
-		const matrix = this.t.getMatrix();
-		const movedMatrix = this.getMovedMatrix(direction);
-		let matches = 0;
-		movedMatrix.forEach((coord) => {
-			if(matrix.includes(coord)) {
-				matches += 1;
-			};
-		});
-		return matches===0;
-
-	};
-	canRotate() {
-		
-		const matrix = this.t.getMatrix();
-		const rotatedMatrix = this.getRotatedMatrix();
-		let matches = 0;
-		rotatedMatrix.forEach((coord) => {
-			if(matrix.includes(coord)) {
-				matches += 1;
-			};
-		});
-		return matches===0;
-
-	};
-	getRandomState() {
-		
-		return random(0, this.blocks.length-1);
-
-	};
-	getBlocks(override) {
-		
-		const state = override >= 0 ? override : this.state;
-		return this.blocks[state];
-
-	};
-	getStaticBlocks() {
-		
-		if(this.falling || this.isBarrier) {return []}; // return empty matrix where brick is falling or is barrier
-		
-		return this.getBlocks().map((block) => {
-			return block;
-		}).filter((block) => {
-			return block.visible;
-		});
-
-	};
-	getNextState() {
-
-		let out = 0;
-		
-		if(this.state===(this.blocks.length-1)) {
-			out = 0;
-		}
-		else {
-			out = (this.state + 1);
-		};
-
-		return out;
-
-	};
-	center() {
-		this.x = 3;
-		return this;
-	};
-	x = 0;
-	y = 0;
-	state = 0;
-	blocks = [];
-	color = 'red';
-	falling = true;
-	isBarrier = false;
-};
-
-class YellowBrick extends Brick {
-	constructor(t) {
-		super(t, 0, 0, [
-			convert([1,1,1,1])
-		], 'gold');
-	};
-};
-
-class RedBrick extends Brick {
-	constructor(t) {
-		super(t, 0, 0, [
-			convert([0,1,0,1,1,0,1,0,0]),
-			convert([1,1,0,0,1,1,0,0,0]),
-			convert([0,0,1,0,1,1,0,1,0]),
-			convert([0,0,0,1,1,0,0,1,1])
-		], 'rgb(237, 0, 73)');
-	};
-};
-
-class GreenBrick extends Brick {
-	constructor(t) {
-		super(t, 0, 0, [
-			convert([1,0,0,1,1,0,0,1,0]),
-			convert([0,1,1,1,1,0,0,0,0]),
-			convert([0,1,0,0,1,1,0,0,1]),
-			convert([0,0,0,0,1,1,1,1,0])
-		], 'limegreen');
-	};
-};
-
-class PurpleBrick extends Brick {
-	constructor(t) {
-		super(t, 0, 0, [
-			convert([0,1,0,0,1,1,0,1,0]),
-			convert([0,0,0,1,1,1,0,1,0]),
-			convert([0,1,0,1,1,0,0,1,0]),
-			convert([0,1,0,1,1,1,0,0,0])
-		], 'rgb(177, 49, 237)');
-	};
-};
-
-class BlueBrick extends Brick {
-	constructor(t) {
-		super(t, 0, 0, [
-			convert([0,1,0,0,1,0,1,1,0]),
-			convert([1,0,0,1,1,1,0,0,0]),
-			convert([0,1,1,0,1,0,0,1,0]),
-			convert([0,0,0,1,1,1,0,0,1])
-		], 'rgb(0, 111, 222)');
-	};
-};
-
-class OrangeBrick extends Brick {
-	constructor(t) {
-		super(t, 0, 0, [
-			convert([0,0,1,1,1,1,0,0,0]),
-			convert([0,1,0,0,1,0,0,1,1]),
-			convert([0,0,0,1,1,1,1,0,0]),
-			convert([1,1,0,0,1,0,0,1,0])
-		], 'rgb(255, 125, 0)');
-	};
-};
-
-class CyanBrick extends Brick {
-	constructor(t) {
-		super(t, 0, 0, [
-			convert([0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0]),
-			convert([0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0])
-		], 'cyan');
-	};
-};
 
 class BottomBarrierBrick extends Brick {
 	constructor(t, x, y) {
@@ -358,49 +34,6 @@ class SideBarrierBrick extends Brick {
 			[[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0], [0, 7, 0], [0, 8, 0], [0, 9, 0], [0, 10, 0], [0, 11, 0], [0, 12, 0], [0, 13, 0], [0, 14, 0], [0, 15, 0], [0, 16, 0], [0, 17, 0], [0, 18, 0], [0, 19, 0]]
 		], 'red', false, true);
 	};
-};
-
-class BrickFactory {
-	constructor(t) {
-
-		this.t = t;
-
-	};
-	getFirstInQueue() {
-		
-		const brick = this.queue.shift(0);
-		if(this.queue.length===0) {
-			this.reset();
-		};
-		
-		return brick;
-
-	};
-	getUpNext() {
-		
-		return this.queue[0];
-
-	};
-	reset() {
-
-		const count = 7;
-
-		this.queue = shuffle(shuffle(shuffle([
-			...makeArray(count, () => new CyanBrick(this.t)),
-			...makeArray(count, () => new BlueBrick(this.t)),
-			...makeArray(count, () => new OrangeBrick(this.t)),
-			...makeArray(count, () => new YellowBrick(this.t)),
-			...makeArray(count, () => new GreenBrick(this.t)),
-			...makeArray(count, () => new PurpleBrick(this.t)),
-			...makeArray(count, () => new RedBrick(this.t))
-		])));
-
-		console.log(this.queue);
-
-		return this;
-
-	};
-	queue = [];
 };
 
 class UpNext extends DisplayObject {
@@ -581,30 +214,31 @@ class HexBlox extends GameBase {
 		lines.forEach(([y, blocks], index) => {
 
 			let flash = true;
-			const flashHandler = () => {
+			const count = 6;
+
+			makeArray(count).forEach((a, i) => {
 				
-				blocks.forEach((block) => {
-					block.flash = flash;
-				});
+				setTimeout(() => {
 
-				flash = !flash;
+					blocks.forEach((block) => {
+						block.flash = flash;
+					});
 
-			};
+					flash = !flash;
 
-			flashHandler();
+					if(i===count-1) {
 
-			const flashInterval = setInterval(flashHandler, this.flashDuration);
+						blocks.forEach((block) => {
+							block.hide();
+						});
 
-			setTimeout(() => {
-				
-				blocks.forEach((block) => {
-					block.hide();
-				});
+						callback(y, index === lines.length-1);
 
-				clearInterval(flashInterval);
-				callback(y, index === lines.length-1);
+					};
 
-			}, (this.flashDuration*3));
+				}, (this.flashDuration*i));
+
+			});
 
 		});
 
@@ -620,7 +254,7 @@ class HexBlox extends GameBase {
 		let fullLines = [];
 
 		for(var y=0;y<this.height;y++) {
-			if(matrix.filter((value) => (value===y)).length===10) {
+			if(matrix.filter((value) => (value===y)).length===this.width) {
 				fullLines.push([y, blockMatrix.filter((block) => (block.getRelativeY()===y))]);
 			};
 		};
@@ -723,7 +357,9 @@ class HexBlox extends GameBase {
 
 	};
 	inflate(value) {
+		
 		return value * this.scale;
+
 	};
 	setMode(mode) {
 
@@ -747,19 +383,21 @@ class HexBlox extends GameBase {
 	level = 0;
 	best = 0;
 	scale = scaler.inflate(Math.floor(limit(window.innerWidth, 500) / 12));
+	// scale = scaler.inflate(30);
 	gap = scaler.inflate(1.5);
 	destroying = 0;
 	scores = [0, 40, 100, 300, 1200];
 	direction = 'right';
 	mode = 'standard';
 	gameOver = false;
-	flashDuration = 300;
+	flashDuration = 400;
 	theme = 'light';
 };
 
 const 
 body = document.body,
 root = document.documentElement,
+resetKeys = ['Space'],
 rotateKeys = ['Space', 'ArrowUp'],
 directionKeys = ['ArrowDown', 'ArrowLeft', 'ArrowRight'],
 directionKeysMap = {
@@ -785,8 +423,6 @@ brickCount = tetris.bricks.length;
 
 tetris.appendTo(body);
 // makers.appendTo(body);
-
-SplashScreen.hide();
 
 console.log('tetris', tetris);
 
@@ -815,6 +451,10 @@ document.addEventListener('keydown', (e) => {
 		tetris.rotate();
 	};
 
+	if(tetris.gameOver && isValidKey(e.code, resetKeys)) {
+		tetris.reset();
+	};
+
 });
 
 document.addEventListener('click', () => {
@@ -825,8 +465,6 @@ document.addEventListener('click', () => {
 	else {
 		tetris.rotate();
 	};
-
-	console.log('click', this);
 
 });
 
